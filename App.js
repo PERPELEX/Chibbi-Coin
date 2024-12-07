@@ -74,17 +74,36 @@ function MainTabs() {
   return (
     <Tab.Navigator
       initialRouteName="Home"
-      activeColor="#000" // Replace with static color
-      inactiveColor="#888" // Replace with static color
-      barStyle={{ backgroundColor: "#fff" }} // Replace with static color
+      activeColor="#02192B" // Replace with static color
+      inactiveColor="#fff" // Replace with static color
+      barStyle={{
+        backgroundColor: "#02192B",
+        borderRadius: 26,
+        // margin: 10,
+        paddingTop: 16,
+        // overflow: "hidden", // Ensure the content is clipped to the rounded corners
+        // position: "absolute", // Position it above other content
+        // left: 10,
+        // right: 10,
+        // bottom: 10,
+      }}
+      screenOptions={{
+        tabBarLabel: () => null, // Hide the tab labels
+        // tabBarIcon: ({ color, focused }) => (
+        //   <Icon name="home" color={focused ? "#fff" : "#aaa"} size={26} />
+        // ),
+      }}
     >
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarLabel: "Home",
-          tabBarIcon: ({ color }) => (
-            <Icon name="home" color={color} size={26} />
+          tabBarIcon: ({ color, focused }) => (
+            <Icon
+              name={focused ? "home" : "home-outline"}
+              color={color}
+              size={26}
+            />
           ),
         }}
       />
@@ -92,9 +111,12 @@ function MainTabs() {
         name="Details"
         component={DetailsScreen}
         options={{
-          tabBarLabel: "Details",
-          tabBarIcon: ({ color }) => (
-            <Icon name="details" color={color} size={26} />
+          tabBarIcon: ({ color, focused }) => (
+            <Icon
+              name={focused ? "rocket" : "rocket-outline"}
+              color={color}
+              size={26}
+            />
           ),
         }}
       />

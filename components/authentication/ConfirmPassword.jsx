@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flexDirection: "row",
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#34c759",
     borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",

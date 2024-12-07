@@ -17,12 +17,12 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#02192B",
   },
   container: {
     flex: 1,
     // alignItems: "center",
     // justifyContent: "center",
-    padding: 16,
+    // padding: 16,
   },
 });

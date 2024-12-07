@@ -27,13 +27,13 @@ export default function FullPage() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 16,
-    backgroundColor: "#f5f5f5",
+    // padding: 16,
+    backgroundColor: "#f2fff1",
   },
   dashboard: {
     // flexGrow: 1,
     padding: 16,
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#34c759",
     marginBottom: 16,
     borderRadius: 10,
     color: "#fff",
