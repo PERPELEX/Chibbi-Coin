@@ -1,32 +1,42 @@
 // src/screens/DetailsScreen.js
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import DefaultLayout from "../layout/HomeLayout";
 import BudgetBox from "../budget/BudgetBox";
 import GoalBox from "../goals/GoalBox";
 
 export default function DetailsScreen() {
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <DefaultLayout>
       <View style={styles.container}>
-        <BudgetBox />
-        <GoalBox />
+        <Text style={styles.TitleText}>Details</Text>
+        <View style={styles.subContainer}>
+          <BudgetBox />
+          <GoalBox />
+        </View>
       </View>
-    </SafeAreaView>
+    </DefaultLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#f2fff1",
-  },
   container: {
     flex: 1,
     alignItems: "start",
     justifyContent: "start",
-    gap: 40,
-    padding: 16,
-    // paddingTop: 40,
+    backgroundColor: "#f2fff1",
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    paddingHorizontal: 16,
+  },
+  TitleText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    letterSpacing: 0.5,
+    color: "#000",
+    paddingVertical: 10,
+  },
+  subContainer: {
+    gap: 20,
   },
 });

@@ -8,5 +8,6 @@ npm start
 
 #f2fff1
 #34c759
+#2BCB79
 #21CE99
 #02192B

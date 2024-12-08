@@ -7,6 +7,8 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { DataProvider } from "./components/contexts/DataContext"; // Import DataProvider
 import HomeScreen from "./components/screens/HomeScreen";
 import DetailsScreen from "./components/screens/DetailsScreen";
+import Notifications from "./components/screens/Notifications";
+import AddTransactionScreen from "./components/screens/AddTransactionScreen";
 import Login from "./components/authentication/Login";
 import SignUp from "./components/authentication/SignUp";
 import ForgotPassword from "./components/authentication/ForgotPassword";
@@ -77,49 +79,17 @@ function MainTabs() {
       activeColor="#02192B" // Replace with static color
       inactiveColor="#fff" // Replace with static color
       barStyle={{
-        backgroundColor: "#02192B",
-        borderRadius: 26,
-        // margin: 10,
-        paddingTop: 16,
-        // overflow: "hidden", // Ensure the content is clipped to the rounded corners
-        // position: "absolute", // Position it above other content
-        // left: 10,
-        // right: 10,
-        // bottom: 10,
+        backgroundColor: "#fff",
+        display: "none",
       }}
       screenOptions={{
-        tabBarLabel: () => null, // Hide the tab labels
-        // tabBarIcon: ({ color, focused }) => (
-        //   <Icon name="home" color={focused ? "#fff" : "#aaa"} size={26} />
-        // ),
+        tabBarLabel: () => null,
       }}
     >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          tabBarIcon: ({ color, focused }) => (
-            <Icon
-              name={focused ? "home" : "home-outline"}
-              color={color}
-              size={26}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Details"
-        component={DetailsScreen}
-        options={{
-          tabBarIcon: ({ color, focused }) => (
-            <Icon
-              name={focused ? "rocket" : "rocket-outline"}
-              color={color}
-              size={26}
-            />
-          ),
-        }}
-      />
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Details" component={DetailsScreen} />
+      <Tab.Screen name="Notifications" component={Notifications} />
+      <Tab.Screen name="AddTransaction" component={AddTransactionScreen} />
     </Tab.Navigator>
   );
 }
@@ -129,7 +99,7 @@ export default function App() {
     <PaperProvider>
       <DataProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="FrontPage">
+          <Stack.Navigator initialRouteName="Main">
             <Stack.Screen
               name="FrontPage"
               component={FrontPage}

@@ -1,35 +1,24 @@
-// src/components/RecentTransactions.js
+// src/components/UpcomingTransactions.js
 import React, { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { DataContext } from "../contexts/DataContext";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-export default function RecentTransactions() {
+export default function UpcomingTransactions() {
   const { data } = useContext(DataContext);
 
   return (
     <View style={styles.section}>
-      {data.recentTransactions.map((tx) => (
-        <View
-          key={tx.id}
-          style={[
-            styles.transaction,
-            tx.type === "added"
-              ? styles.transactionAdded
-              : styles.transactionDeducted,
-          ]}
-        >
-          <Text style={styles.transactionName}>{tx.name}</Text>
+      {data.upcomingTransactions.map((transaction) => (
+        <View key={transaction.id} style={styles.transaction}>
           <View style={styles.transactionDetails}>
-            <Text style={styles.transactionAmount}>
-              ${tx.amount.toFixed(2)}
-            </Text>
-            {tx.type === "added" ? (
-              <Icon name="arrow-up" size={20} color="#2BCB79" />
-            ) : (
-              <Icon name="arrow-down" size={20} color="#FF6B6B" />
-            )}
+            <Text style={styles.transactionName}>{transaction.name}</Text>
+            <Icon name="calendar" size={20} color="#666" />
+            <Text style={styles.transactionDate}>{transaction.date}</Text>
           </View>
+          <Text style={styles.transactionAmount}>
+            ${transaction.amount.toFixed(2)}
+          </Text>
         </View>
       ))}
     </View>
@@ -41,6 +30,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 16,
     gap: 5,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
   },
   transaction: {
     flexDirection: "row",
@@ -56,13 +50,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 1,
     elevation: 1,
-    borderLeftWidth: 5, // Add left border width
-  },
-  transactionAdded: {
-    borderLeftColor: "#2BCB79", // Green for added transactions
-  },
-  transactionDeducted: {
-    borderLeftColor: "#FF6B6B", // Red for deducted transactions
+    borderLeftWidth: 5,
+    borderLeftColor: "#FF6B6B", // Red for upcoming transactions
   },
   transactionName: {
     fontSize: 14,
@@ -76,5 +65,9 @@ const styles = StyleSheet.create({
   transactionAmount: {
     fontSize: 14,
     fontWeight: "600",
+  },
+  transactionDate: {
+    fontSize: 12,
+    color: "#666",
   },
 });
