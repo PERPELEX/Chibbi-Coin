@@ -12,6 +12,12 @@ import SignUp from "./components/authentication/SignUp";
 import ForgotPassword from "./components/authentication/ForgotPassword";
 import ConfirmPassword from "./components/authentication/ConfirmPassword";
 import FrontPage from "./components/authentication/FrontPage";
+import BudgetBox from "./components/budget/BudgetBox";
+import GoalBox from "./components/goals/GoalBox";
+import BudgetDetail from "./components/screens/BudgetDetail";
+import GoalDetail from "./components/screens/GoalDetail";
+import CreateBudget from "./components/create/CreateBudget";
+import CreateGoal from "./components/create/CreateGoal";
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -44,7 +50,6 @@ function LoginTabs() {
           ),
         }}
       />
-
       <Tab.Screen
         name="Confirm"
         component={ConfirmPassword}
@@ -55,7 +60,6 @@ function LoginTabs() {
           ),
         }}
       />
-
       <Tab.Screen
         name="Forgot"
         component={ForgotPassword}
@@ -79,19 +83,10 @@ function MainTabs() {
       barStyle={{
         backgroundColor: "#02192B",
         borderRadius: 26,
-        // margin: 10,
         paddingTop: 16,
-        // overflow: "hidden", // Ensure the content is clipped to the rounded corners
-        // position: "absolute", // Position it above other content
-        // left: 10,
-        // right: 10,
-        // bottom: 10,
       }}
       screenOptions={{
         tabBarLabel: () => null, // Hide the tab labels
-        // tabBarIcon: ({ color, focused }) => (
-        //   <Icon name="home" color={focused ? "#fff" : "#aaa"} size={26} />
-        // ),
       }}
     >
       <Tab.Screen
@@ -144,6 +139,36 @@ export default function App() {
               name="Main"
               component={MainTabs}
               options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="BudgetBox"
+              component={BudgetBox}
+              options={{ title: "Budgets" }}
+            />
+            <Stack.Screen
+              name="GoalBox"
+              component={GoalBox}
+              options={{ title: "Goals" }}
+            />
+            <Stack.Screen
+              name="BudgetDetail"
+              component={BudgetDetail}
+              options={{ title: "Budget Detail" }}
+            />
+            <Stack.Screen
+              name="GoalDetail"
+              component={GoalDetail}
+              options={{ title: "Goal Detail" }}
+            />
+            <Stack.Screen
+              name="CreateBudget"
+              component={CreateBudget}
+              options={{ title: "Create Budget" }}
+            />
+            <Stack.Screen
+              name="CreateGoal"
+              component={CreateGoal}
+              options={{ title: "Create Goal" }}
             />
           </Stack.Navigator>
         </NavigationContainer>

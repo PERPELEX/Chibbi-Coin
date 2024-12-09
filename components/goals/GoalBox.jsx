@@ -1,23 +1,19 @@
-// src/screens/GoalBox.js
 import React, { useContext } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import { ProgressBar } from "react-native-paper";
 import { DataContext } from "../contexts/DataContext";
+import { useNavigation } from "@react-navigation/native";
+import { formatCurrency } from "../utils/currencyUtils"; // Import the utility function
 
 export default function GoalBox() {
   const { data } = useContext(DataContext);
-
-  if (!data.goals || data.goals.length === 0) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Goals</Text>
-        <Text style={styles.subtitle}>No goals created</Text>
-        <TouchableOpacity>
-          <Text style={styles.createGoalButton}>CREATE GOAL</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -26,23 +22,31 @@ export default function GoalBox() {
         How much I have saved towards my goals?
       </Text>
 
-      {data.goals.map((goalItem, index) => {
-        const progress = goalItem.saved / goalItem.target;
-        return (
-          <View key={index} style={styles.section}>
-            <Text style={styles.sectionTitle}>{goalItem.name}</Text>
-            <View style={styles.goalRow}>
-              <Text style={styles.goalText}>{goalItem.name} goal</Text>
-              <Text style={styles.amount}>
-                {goalItem.saved} / {goalItem.target} PKR
-              </Text>
-            </View>
-            <ProgressBar progress={progress} color="#34c759" />
-          </View>
-        );
-      })}
+      <FlatList
+        data={data.goals}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => {
+          const progress = Math.min(Math.max(item.saved / item.target, 0), 1); // Ensure progress is between 0 and 1
+          return (
+            <TouchableOpacity
+              style={styles.section}
+              onPress={() => navigation.navigate("GoalDetail", { goal: item })}
+            >
+              <Text style={styles.sectionTitle}>{item.name}</Text>
+              <View style={styles.goalRow}>
+                <Text style={styles.goalText}>{item.name} goal</Text>
+                <Text style={styles.amount}>
+                  {formatCurrency(item.saved)} / {formatCurrency(item.target)}{" "}
+                  PKR
+                </Text>
+              </View>
+              <ProgressBar progress={progress} color="#34c759" />
+            </TouchableOpacity>
+          );
+        }}
+      />
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("CreateGoal")}>
         <Text style={styles.createGoalButton}>CREATE GOAL</Text>
       </TouchableOpacity>
     </View>
@@ -51,7 +55,6 @@ export default function GoalBox() {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     padding: 16,
     backgroundColor: "#FFFFFF",
     borderRadius: 10,
@@ -93,6 +96,10 @@ const styles = StyleSheet.create({
   amount: {
     fontSize: 14,
     color: "#333",
+  },
+  dateText: {
+    fontSize: 12,
+    color: "#666",
   },
   createGoalButton: {
     fontSize: 14,
