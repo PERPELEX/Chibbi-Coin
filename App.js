@@ -7,13 +7,14 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { DataProvider } from "./components/contexts/DataContext"; // Import DataProvider
 import HomeScreen from "./components/screens/HomeScreen";
 import DetailsScreen from "./components/screens/DetailsScreen";
-import Notifications from "./components/screens/Notifications";
+import Notification from "./components/notification/Notification";
 import AddTransactionScreen from "./components/screens/AddTransactionScreen";
 import Login from "./components/authentication/Login";
 import SignUp from "./components/authentication/SignUp";
 import ForgotPassword from "./components/authentication/ForgotPassword";
 import ConfirmPassword from "./components/authentication/ConfirmPassword";
 import FrontPage from "./components/authentication/FrontPage";
+import User from "./components/userProfile/user"
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -88,7 +89,7 @@ function MainTabs() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Details" component={DetailsScreen} />
-      <Tab.Screen name="Notifications" component={Notifications} />
+      <Tab.Screen name="Notifications" component={Notification} />
       <Tab.Screen name="AddTransaction" component={AddTransactionScreen} />
     </Tab.Navigator>
   );
