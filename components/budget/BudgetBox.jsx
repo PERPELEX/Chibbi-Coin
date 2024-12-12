@@ -1,23 +1,19 @@
-// src/screens/BudgetBox.js
 import React, { useContext } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import { ProgressBar } from "react-native-paper";
 import { DataContext } from "../contexts/DataContext";
+import { useNavigation } from "@react-navigation/native";
+import { formatCurrency } from "../utils/currencyUtils"; // Import the utility function
 
 export default function BudgetBox() {
   const { data } = useContext(DataContext);
-
-  if (!data.budget || data.budget.length === 0) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Budgets</Text>
-        <Text style={styles.subtitle}>No budgets created</Text>
-        <TouchableOpacity>
-          <Text style={styles.createBudgetButton}>CREATE BUDGET</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -26,23 +22,36 @@ export default function BudgetBox() {
         How much I can spend to meet my budget?
       </Text>
 
-      {data.budget.map((budgetItem, index) => {
-        const progress = budgetItem.spent / budgetItem.amount;
-        return (
-          <View key={index} style={styles.section}>
-            <Text style={styles.sectionTitle}>{budgetItem.name}</Text>
-            <View style={styles.budgetRow}>
-              <Text style={styles.budgetText}>{budgetItem.name} budget</Text>
-              <Text style={styles.amount}>
-                {budgetItem.spent} / {budgetItem.amount} PKR
-              </Text>
-            </View>
-            <ProgressBar progress={progress} color="#34c759" />
-          </View>
-        );
-      })}
+      <FlatList
+        data={data.budget}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => {
+          const progress = Math.min(Math.max(item.spent / item.amount, 0), 1); // Ensure progress is between 0 and 1
+          return (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("BudgetDetail", {
+                  budgetItem: { ...item, date: item.date.toISOString() },
+                })
+              }
+            >
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>{item.name}</Text>
+                <View style={styles.budgetRow}>
+                  <Text style={styles.budgetText}>{item.name} budget</Text>
+                  <Text style={styles.amount}>
+                    {formatCurrency(item.spent)} / {formatCurrency(item.amount)}{" "}
+                    PKR
+                  </Text>
+                </View>
+                <ProgressBar progress={progress} color="#34c759" />
+              </View>
+            </TouchableOpacity>
+          );
+        }}
+      />
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("CreateBudget")}>
         <Text style={styles.createBudgetButton}>CREATE BUDGET</Text>
       </TouchableOpacity>
     </View>
@@ -51,7 +60,6 @@ export default function BudgetBox() {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     padding: 16,
     backgroundColor: "#FFFFFF",
     borderRadius: 10,
@@ -59,12 +67,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5, // For Android shadow
+    elevation: 5,
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#34c759", // Green title
+    color: "#34c759",
   },
   subtitle: {
     fontSize: 14,
@@ -77,7 +85,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#34c759", // Green section title
+    color: "#34c759",
     marginBottom: 8,
   },
   budgetRow: {

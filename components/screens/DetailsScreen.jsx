@@ -1,13 +1,13 @@
 // src/screens/DetailsScreen.js
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import DefaultLayout from "../layout/HomeLayout";
+import HomeLayout from "../layout/HomeLayout";
 import BudgetBox from "../budget/BudgetBox";
 import GoalBox from "../goals/GoalBox";
 
 export default function DetailsScreen() {
   return (
-    <DefaultLayout>
+    <HomeLayout>
       <View style={styles.container}>
         <Text style={styles.TitleText}>Details</Text>
         <View style={styles.subContainer}>
@@ -15,7 +15,7 @@ export default function DetailsScreen() {
           <GoalBox />
         </View>
       </View>
-    </DefaultLayout>
+    </HomeLayout>
   );
 }
 

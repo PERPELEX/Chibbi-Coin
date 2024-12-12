@@ -14,6 +14,12 @@ import SignUp from "./components/authentication/SignUp";
 import ForgotPassword from "./components/authentication/ForgotPassword";
 import ConfirmPassword from "./components/authentication/ConfirmPassword";
 import FrontPage from "./components/authentication/FrontPage";
+import BudgetBox from "./components/budget/BudgetBox";
+import GoalBox from "./components/goals/GoalBox";
+import BudgetDetail from "./components/screens/BudgetDetail";
+import GoalDetail from "./components/screens/GoalDetail";
+import CreateBudget from "./components/create/CreateBudget";
+import CreateGoal from "./components/create/CreateGoal";
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -46,7 +52,6 @@ function LoginTabs() {
           ),
         }}
       />
-
       <Tab.Screen
         name="Confirm"
         component={ConfirmPassword}
@@ -57,7 +62,6 @@ function LoginTabs() {
           ),
         }}
       />
-
       <Tab.Screen
         name="Forgot"
         component={ForgotPassword}
@@ -90,6 +94,12 @@ function MainTabs() {
       <Tab.Screen name="Details" component={DetailsScreen} />
       <Tab.Screen name="Notifications" component={Notifications} />
       <Tab.Screen name="AddTransaction" component={AddTransactionScreen} />
+      <Tab.Screen name="BudgetBox" component={BudgetBox} />
+      <Tab.Screen name="GoalBox" component={GoalBox} />
+      <Tab.Screen name="BudgetDetail" component={BudgetDetail} />
+      <Tab.Screen name="GoalDetail" component={GoalDetail} />
+      <Tab.Screen name="CreateBudget" component={CreateBudget} />
+      <Tab.Screen name="CreateGoal" component={CreateGoal} />
     </Tab.Navigator>
   );
 }
