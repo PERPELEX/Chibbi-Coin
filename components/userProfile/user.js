@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, StatusBar, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import RNPickerSelect from "react-native-picker-select"; 
+import Icon from "react-native-vector-icons/MaterialIcons";
 
-const User = () => {
+const User = (navigation) => {
   const [imageUri, setImageUri] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -64,6 +65,7 @@ const User = () => {
       <StatusBar backgroundColor={"#2BCB79"} shadowColor={"#000"} marginBottom={20}></StatusBar>
 
       <View style={styles.heading}>
+        <Icon name={"menu"} paddingLeft={10} size={30} color="#fff" />
         <Text style={styles.headingText}>Profile</Text>
         <Image style={styles.image} source={{ uri: imageUri }} />
       </View>
@@ -79,11 +81,11 @@ const User = () => {
       </View>
 
       <View style={styles.profileDetailsContainer}>
-        <Text style={styles.profileDetailsText}>Name: {name}</Text>
-        <Text style={styles.profileDetailsText}>Email: {email}</Text>
+        <Text style={styles.profileDetailsText}>Muhammad Mahi</Text>
+        <Text style={styles.profileDetailsText}>maheemahesar39@gmail.com</Text>
 
         {/* Currency Selector */}
-        <Text style={styles.profileDetailsText}>Currency:</Text>
+        <Text style={styles.profileDetailsText}>Currency</Text>
         <RNPickerSelect
           onValueChange={(value) => setCurrency(value)}
           items={[
@@ -113,7 +115,7 @@ const User = () => {
       </View>
       <View style={styles.button}>
           <TouchableOpacity
-            onPress={() => console.log("Logout")}
+            onPress={() => navigation.navigate("Login")}
             style={styles.logoutButton}
           >
             <Text style={styles.logoutButtonText}>Logout</Text>
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
   image: {
     width: 35,
     height: 30,
-    borderRadius: 20,
+    borderRadius: 25,
     marginRight: 10,
     resizeMode: "contain",
   },
@@ -176,16 +178,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   profileDetailsContainer: {
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "center",
     paddingLeft: 10,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#2BCB79",
+    shadowColor: "#000",
     padding: 20,
   },
   profileDetailsText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    color: "white",
     marginBottom: 10,
   },
   button: {
