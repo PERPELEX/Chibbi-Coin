@@ -1,8 +1,6 @@
 How to Start
 
 npm uninstall -g expo-cli
-npx expo start
-
 npm install expo@latest --legacy-peer-deps
 npm start
 
