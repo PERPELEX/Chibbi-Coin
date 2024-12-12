@@ -7,7 +7,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { DataProvider } from "./components/contexts/DataContext"; // Import DataProvider
 import HomeScreen from "./components/screens/HomeScreen";
 import DetailsScreen from "./components/screens/DetailsScreen";
-import Notifications from "./components/screens/Notifications";
+import Notification from "./components/screens/Notification";
 import AddTransactionScreen from "./components/screens/AddTransactionScreen";
 import Login from "./components/authentication/Login";
 import SignUp from "./components/authentication/SignUp";
@@ -20,6 +20,7 @@ import BudgetDetail from "./components/screens/BudgetDetail";
 import GoalDetail from "./components/screens/GoalDetail";
 import CreateBudget from "./components/create/CreateBudget";
 import CreateGoal from "./components/create/CreateGoal";
+import User from "./components/userProfile/user";
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -92,7 +93,8 @@ function MainTabs() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Details" component={DetailsScreen} />
-      <Tab.Screen name="Notifications" component={Notifications} />
+      <Tab.Screen name="Notifications" component={Notification} />
+      <Tab.Screen name="User" component={User} />
       <Tab.Screen name="AddTransaction" component={AddTransactionScreen} />
       <Tab.Screen name="BudgetBox" component={BudgetBox} />
       <Tab.Screen name="GoalBox" component={GoalBox} />
