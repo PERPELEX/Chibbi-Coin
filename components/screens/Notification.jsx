@@ -47,27 +47,28 @@ const Notification = () => {
   );
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <StatusBar
-          backgroundColor={"#2BCB79"}
-          shadowColor={"#000"}
-          marginBottom={20}
-        ></StatusBar>
-        <ActivityIndicator size="large" color="#2BCB79" />
-        <Text>Loading...</Text>
-      </View>
+      <DefaultLayout>
+        <Backbar name="Notifications" />
+        <View style={styles.loadingContainer}>
+          <StatusBar
+            backgroundColor={"#2BCB79"}
+            shadowColor={"#000"}
+            marginBottom={20}
+          ></StatusBar>
+          <ActivityIndicator size="large" color="#2BCB79" />
+          <Text>Loading...</Text>
+        </View>
+      </DefaultLayout>
     );
   }
   if (!loading && notifications.length === 0) {
     return (
-      <View style={styles.loadingContainer}>
-        <StatusBar
-          backgroundColor={"#2BCB79"}
-          shadowColor={"#000"}
-          marginBottom={20}
-        ></StatusBar>
-        <Text>No notifications available.</Text>
-      </View>
+      <DefaultLayout>
+        <Backbar name="Notifications" />
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>No notifications available.</Text>
+        </View>
+      </DefaultLayout>
     );
   }
   return (
@@ -88,6 +89,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#eee",
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#eee",
+  },
+  emptyText: {
+    textAlign: "cenetr",
+    fontSize: 18,
   },
   heading: {
     flexDirection: "row",
