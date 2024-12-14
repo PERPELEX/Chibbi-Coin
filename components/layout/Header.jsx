@@ -27,7 +27,7 @@ export default function Header() {
 
   return (
     <View style={styles.header}>
-      <TouchableOpacity onPress={openModal} style={styles.iconContainer}>
+      <TouchableOpacity onPress={() => navigation.navigate("User")} style={styles.iconContainer}>
         <Icon name="account" color="#02192B" size={30} />
       </TouchableOpacity>
       <TouchableOpacity
