@@ -13,8 +13,8 @@ export default function UpcomingTransactions() {
         <View key={transaction.id} style={styles.transaction}>
           <View style={styles.transactionDetails}>
             <Text style={styles.transactionName}>{transaction.name}</Text>
-            <Icon name="calendar" size={20} color="#666" />
-            <Text style={styles.transactionDate}>{transaction.date}</Text>
+            {/* <Icon name="calendar" size={20} color="#666" />
+            <Text style={styles.transactionDate}>{transaction.date}</Text> */}
           </View>
           <Text style={styles.transactionAmount}>
             ${transaction.amount.toFixed(2)}
