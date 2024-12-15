@@ -1,5 +1,6 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useContext } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { DataContext } from "../contexts/DataContext"; // Import the context
 import { formatDate } from "../utils/dateUtils"; // Import the utility function
 import { formatCurrency } from "../utils/currencyUtils";
 import DefaultLayout from "../layout/DefaultLayout";
@@ -7,14 +8,33 @@ import Backbar from "../layout/Backbar";
 
 export default function BudgetDetail({ route }) {
   const { budgetItem } = route.params;
+  const { deleteBudget } = useContext(DataContext); // Get deleteBudget from context
+
   const remainingAmount = budgetItem.amount - budgetItem.spent;
   const spentPercentage = (budgetItem.spent / budgetItem.amount) * 100;
+
+  const handleDeleteBudget = () => {
+    Alert.alert(
+      "Confirm Deletion",
+      "Are you sure you want to delete this budget?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "OK",
+          onPress: () => deleteBudget(budgetItem.id), // Call deleteBudget on confirmation
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
   return (
     <DefaultLayout>
       <Backbar name={`${budgetItem.name} Details`} url="Details" />
       <View style={styles.container}>
-        <Text style={styles.title}>{budgetItem.name} Details</Text>
         <View style={styles.card}>
           <Text style={styles.detailText}>
             Total Amount:{" "}
@@ -64,6 +84,11 @@ export default function BudgetDetail({ route }) {
             </Text>
           )}
         </View>
+
+        {/* Delete Budget Button */}
+        <TouchableOpacity style={styles.button} onPress={handleDeleteBudget}>
+          <Text style={styles.buttonText}>Delete Budget</Text>
+        </TouchableOpacity>
       </View>
     </DefaultLayout>
   );
@@ -73,30 +98,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#E8F5E9",
+    backgroundColor: "#F1F8E9",
     justifyContent: "center",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#34c759",
-    textAlign: "center",
-    marginBottom: 20,
   },
   card: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 10,
+    borderRadius: 15,
     padding: 20,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
     elevation: 5,
   },
   detailText: {
     fontSize: 16,
     color: "#333",
-    marginBottom: 10,
+    marginBottom: 12,
+    lineHeight: 22,
   },
   amount: {
     fontWeight: "bold",
@@ -105,26 +124,39 @@ const styles = StyleSheet.create({
   remainingAmount: {
     fontWeight: "bold",
     fontSize: 18,
-    color: "#34c759", // A contrasting color for remaining amount
+    color: "#2BCB79",
   },
   progressContainer: {
-    height: 20,
+    height: 15,
     backgroundColor: "#E0E0E0",
     borderRadius: 10,
     overflow: "hidden",
-    marginVertical: 10,
+    marginVertical: 15,
   },
   progressBar: {
     height: "100%",
-    backgroundColor: "#34c759",
+    backgroundColor: "#2BCB79",
   },
   progressText: {
     textAlign: "center",
-    fontWeight: "bold",
+    fontWeight: "500",
     color: "#333",
+    marginTop: 5,
   },
   highlight: {
     fontWeight: "600",
     color: "#666",
+  },
+  button: {
+    backgroundColor: "#2BCB79", // Red color for delete button
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    marginVertical: 10,
+    marginTop: 40,
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });

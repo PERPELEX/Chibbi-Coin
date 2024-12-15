@@ -1,173 +1,4 @@
-// import React, { useState, useEffect, useContext } from "react";
-// import {
-//   View,
-//   Text,
-//   TextInput,
-//   StyleSheet,
-//   ScrollView,
-//   Alert,
-//   TouchableOpacity,
-// } from "react-native";
-// import DateTimePicker from "@react-native-community/datetimepicker";
-// import { useNavigation } from "@react-navigation/native";
-// import { DataContext } from "../contexts/DataContext";
-// import { formatDate } from "../utils/dateUtils";
-
-// export default function CreateGoal() {
-//   const { addGoal } = useContext(DataContext);
-//   const navigation = useNavigation();
-//   const [name, setName] = useState("");
-//   const [target, setTarget] = useState("");
-//   const [saved, setSaved] = useState("");
-//   const [desiredDate, setDesiredDate] = useState(new Date());
-//   const [showDatePicker, setShowDatePicker] = useState(false);
-
-//   useEffect(() => {
-//     // Reset fields when the component is mounted
-//     setName("");
-//     setTarget("");
-//     setSaved("");
-//     setDesiredDate(new Date());
-//   }, []);
-
-//   const handleSave = () => {
-//     // Validate input fields
-//     if (!name || !target || !saved) {
-//       Alert.alert("Validation Error", "Please fill in all fields.");
-//       return;
-//     }
-
-//     const newGoal = {
-//       name,
-//       target: parseFloat(target),
-//       saved: parseFloat(saved) || 0,
-//       desiredDate,
-//     };
-
-//     addGoal(newGoal);
-//     navigation.goBack();
-//   };
-
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.title}>Create Goal</Text>
-//       <ScrollView>
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Goal Name"
-//           value={name}
-//           onChangeText={setName}
-//         />
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Target Amount"
-//           value={target}
-//           onChangeText={setTarget}
-//           keyboardType="numeric"
-//         />
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Saved Already"
-//           value={saved}
-//           onChangeText={setSaved}
-//           keyboardType="numeric"
-//         />
-//         <TouchableOpacity
-//           style={styles.dateButton}
-//           onPress={() => setShowDatePicker(true)}
-//         >
-//           <Text style={styles.buttonText}>Select Desired Date</Text>
-//         </TouchableOpacity>
-//         {showDatePicker && (
-//           <DateTimePicker
-//             value={desiredDate}
-//             mode="date"
-//             display="spinner"
-//             onChange={(event, date) => {
-//               setShowDatePicker(false);
-//               if (date) setDesiredDate(date);
-//             }}
-//           />
-//         )}
-//         <Text style={styles.selectedDate}>
-//           Desired Date: {formatDate(desiredDate)}
-//         </Text>
-//       </ScrollView>
-//       <View style={styles.buttonContainer}>
-//         <TouchableOpacity
-//           style={styles.cancelBtn}
-//           onPress={() => navigation.goBack()}
-//         >
-//           <Text style={styles.buttonText}>Cancel</Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
-//           <Text style={styles.buttonText}>Save</Text>
-//         </TouchableOpacity>
-//       </View>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 20,
-//     backgroundColor: "#E8F5E9",
-//   },
-//   title: {
-//     fontSize: 24,
-//     fontWeight: "bold",
-//     marginBottom: 20,
-//     textAlign: "center",
-//   },
-//   input: {
-//     height: 45,
-//     borderColor: "#A5D6A7",
-//     borderWidth: 1,
-//     borderRadius: 5,
-//     marginBottom: 15,
-//     paddingHorizontal: 10,
-//     backgroundColor: "#FFFFFF",
-//   },
-//   selectedDate: {
-//     marginTop: 10,
-//     marginBottom: 10,
-//     textAlign: "center",
-//     fontSize: 16,
-//     color: "#555",
-//   },
-//   buttonContainer: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     marginTop: 20,
-//   },
-//   saveBtn: {
-//     backgroundColor: "#34c759",
-//     padding: 15,
-//     borderRadius: 5,
-//     flex: 1,
-//   },
-//   cancelBtn: {
-//     backgroundColor: "tomato",
-//     padding: 15,
-//     borderRadius: 5,
-//     flex: 1,
-//     marginRight: 10,
-//   },
-//   buttonText: {
-//     color: "white",
-//     textAlign: "center",
-//     fontWeight: "bold",
-//   },
-//   dateButton: {
-//     backgroundColor: "#34c759",
-//     padding: 15,
-//     borderRadius: 5,
-//     marginBottom: 15,
-//   },
-// });
-
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -179,6 +10,7 @@ import {
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { DataContext } from "../contexts/DataContext";
 import { formatDate } from "../utils/dateUtils";
 import DefaultLayout from "../layout/DefaultLayout";
@@ -198,12 +30,22 @@ export default function CreateGoal() {
   const [desiredDate, setDesiredDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  useEffect(() => {
-    setName("");
-    setTarget("");
-    setSaved("");
-    setDesiredDate(new Date());
-  }, []);
+  const [errors, setErrors] = useState({
+    name: false,
+    target: false,
+    saved: false,
+  });
+
+  // Reset fields and errors when the screen is focused
+  useFocusEffect(
+    React.useCallback(() => {
+      setName("");
+      setTarget("");
+      setSaved("");
+      setDesiredDate(new Date());
+      setErrors({ name: false, target: false, saved: false }); // Reset errors
+    }, [])
+  );
 
   const handleInputChange = (text, setter) => {
     const formattedValue = formatWithCommas(text);
@@ -211,7 +53,25 @@ export default function CreateGoal() {
   };
 
   const handleSave = () => {
-    if (!name || !target || !saved) {
+    let valid = true;
+    const newErrors = { name: false, target: false, saved: false };
+
+    if (!name) {
+      newErrors.name = true;
+      valid = false;
+    }
+    if (!target) {
+      newErrors.target = true;
+      valid = false;
+    }
+    if (!saved) {
+      newErrors.saved = true;
+      valid = false;
+    }
+
+    setErrors(newErrors);
+
+    if (!valid) {
       Alert.alert("Validation Error", "Please fill in all fields.");
       return;
     }
@@ -224,41 +84,67 @@ export default function CreateGoal() {
     };
 
     addGoal(newGoal);
+
+    // Reset fields and errors after saving
+    setName("");
+    setTarget("");
+    setSaved("");
+    setDesiredDate(new Date());
+    setErrors({ name: false, target: false, saved: false }); // Reset errors
+
     navigation.goBack();
   };
 
   return (
     <DefaultLayout>
-      <Backbar name="Create Goal" url="Details" />
+      <Backbar name="Create Goal" url="Details" close="true" />
       <View style={styles.container}>
-        <Text style={styles.title}>Create Goal</Text>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, errors.name && styles.inputError]}
             placeholder="Goal Name"
             value={name}
             onChangeText={setName}
           />
+          {errors.name && (
+            <Text style={styles.errorText}>Please enter a goal name.</Text>
+          )}
+
           <TextInput
-            style={styles.input}
+            style={[styles.input, errors.target && styles.inputError]}
             placeholder="Target Amount"
             value={target}
             onChangeText={(text) => handleInputChange(text, setTarget)}
             keyboardType="numeric"
           />
+          {errors.target && (
+            <Text style={styles.errorText}>Please enter a target amount.</Text>
+          )}
+
           <TextInput
-            style={styles.input}
+            style={[styles.input, errors.saved && styles.inputError]}
             placeholder="Saved Already"
             value={saved}
             onChangeText={(text) => handleInputChange(text, setSaved)}
             keyboardType="numeric"
           />
-          <TouchableOpacity
-            style={styles.dateButton}
-            onPress={() => setShowDatePicker(true)}
-          >
-            <Text style={styles.buttonText}>Select Desired Date</Text>
-          </TouchableOpacity>
+          {errors.saved && (
+            <Text style={styles.errorText}>Please enter the saved amount.</Text>
+          )}
+
+          {/* Desired Date Section */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>Desired Date</Text>
+            <TouchableOpacity
+              style={[styles.input, styles.readOnlyInput]}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <Text style={styles.inputText}>
+                {formatDate(desiredDate) || "Select a date"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           {showDatePicker && (
             <DateTimePicker
               value={desiredDate}
@@ -270,17 +156,9 @@ export default function CreateGoal() {
               }}
             />
           )}
-          <Text style={styles.selectedDate}>
-            Desired Date: {formatDate(desiredDate)}
-          </Text>
         </ScrollView>
+
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.cancelBtn}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.buttonText}>Cancel</Text>
-          </TouchableOpacity>
           <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
             <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
@@ -294,29 +172,58 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#E8F5E9",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
+    paddingTop: 60,
+    backgroundColor: "#F6F8FA",
   },
   input: {
-    height: 45,
-    borderColor: "#A5D6A7",
+    height: 50,
+    borderColor: "#D1D9E6",
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 8,
     marginBottom: 15,
-    paddingHorizontal: 10,
-    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 15,
+    backgroundColor: "#FFF",
+    fontSize: 16,
   },
-  selectedDate: {
-    marginTop: 10,
-    marginBottom: 10,
-    textAlign: "center",
+  inputError: {
+    borderColor: "red", // Red border color on error
+  },
+  label: {
     fontSize: 16,
     color: "#555",
+    marginBottom: 8,
+  },
+  inputContainer: {
+    marginBottom: 15,
+  },
+  readOnlyInput: {
+    backgroundColor: "#EAEAEA",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  inputText: {
+    fontSize: 16,
+    color: "#555",
+  },
+  dateButton: {
+    backgroundColor: "#2BCB79",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 6,
+    marginBottom: 15,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dateButtonText: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  selectedDate: {
+    fontSize: 16,
+    color: "#555",
+    marginBottom: 15,
+    textAlign: "center",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -324,27 +231,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   saveBtn: {
-    backgroundColor: "#34c759",
+    backgroundColor: "#2BCB79",
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 8,
     flex: 1,
-  },
-  cancelBtn: {
-    backgroundColor: "tomato",
-    padding: 15,
-    borderRadius: 5,
-    flex: 1,
-    marginRight: 10,
+    alignItems: "center",
   },
   buttonText: {
-    color: "white",
-    textAlign: "center",
+    color: "#FFF",
     fontWeight: "bold",
+    fontSize: 16,
   },
-  dateButton: {
-    backgroundColor: "#34c759",
-    padding: 15,
-    borderRadius: 5,
-    marginBottom: 15,
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginBottom: 8,
   },
 });

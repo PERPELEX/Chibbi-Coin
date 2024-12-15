@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Switch,
+  Modal,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -18,14 +19,20 @@ const TransactionDetails = ({
   setSubCategory,
   date,
   setDate,
+  isRecurring,
+  setIsRecurring,
+  frequency,
+  setFrequency,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
 }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-  const [isRecurring, setIsRecurring] = useState(false);
-  const [frequency, setFrequency] = useState("daily");
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [modalVisible, setModalVisible] = useState(false);
+  const [tempNotes, setTempNotes] = useState(notes);
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
@@ -56,15 +63,20 @@ const TransactionDetails = ({
     { label: "Others", icon: "ellipsis-h" },
   ];
 
+  const handleSaveNotes = () => {
+    setNotes(tempNotes);
+    setModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Notes</Text>
-      <TextInput
+      <TouchableOpacity
         style={styles.input}
-        placeholder="Add notes"
-        value={notes}
-        onChangeText={setNotes}
-      />
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={styles.notesText}>{notes || "Add notes"}</Text>
+      </TouchableOpacity>
 
       <Text style={styles.label}>Category</Text>
       <View style={styles.pickerContainer}>
@@ -167,6 +179,40 @@ const TransactionDetails = ({
           </View>
         </>
       )}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Add Notes</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Enter notes"
+              value={tempNotes}
+              onChangeText={setTempNotes}
+              multiline
+            />
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.saveButton]}
+                onPress={handleSaveNotes}
+              >
+                <Text style={styles.buttonText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -182,6 +228,7 @@ const styles = StyleSheet.create({
     color: "#000",
     marginBottom: 5,
     fontSize: 16,
+    fontWeight: "500",
   },
   input: {
     fontSize: 16,
@@ -190,6 +237,10 @@ const styles = StyleSheet.create({
     padding: 18,
     marginBottom: 15,
     borderRadius: 5,
+  },
+  notesText: {
+    color: "#000",
+    fontSize: 16,
   },
   pickerContainer: {
     backgroundColor: "#eee",
@@ -220,7 +271,56 @@ const styles = StyleSheet.create({
   },
   dateColumn: {
     flex: 1,
-    // marginRight: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  modalInput: {
+    fontSize: 16,
+    backgroundColor: "#eee",
+    color: "#000",
+    padding: 10,
+    marginBottom: 15,
+    borderRadius: 5,
+    height: 100,
+    textAlignVertical: "top",
+  },
+  modalButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 40,
+  },
+  modalButton: {
+    flex: 1,
+    borderRadius: 5,
+    padding: 10,
+    alignItems: "center",
+  },
+  cancelButton: {
+    backgroundColor: "#fa5252",
+  },
+  saveButton: {
+    backgroundColor: "#2BCB79",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

@@ -1,6 +1,6 @@
 // src/screens/DetailsScreen.js
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import HomeLayout from "../layout/HomeLayout";
 import BudgetBox from "../budget/BudgetBox";
 import GoalBox from "../goals/GoalBox";
@@ -8,13 +8,15 @@ import GoalBox from "../goals/GoalBox";
 export default function DetailsScreen() {
   return (
     <HomeLayout>
-      <View style={styles.container}>
-        <Text style={styles.TitleText}>Details</Text>
+      <ScrollView
+        contentContainerStyle={styles.container} // Move layout styles here
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.subContainer}>
           <BudgetBox />
           <GoalBox />
         </View>
-      </View>
+      </ScrollView>
     </HomeLayout>
   );
 }
@@ -22,19 +24,13 @@ export default function DetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "start",
-    justifyContent: "start",
+    alignItems: "start", // Now inside contentContainerStyle
+    justifyContent: "start", // Now inside contentContainerStyle
     backgroundColor: "#f2fff1",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     paddingHorizontal: 16,
-  },
-  TitleText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    letterSpacing: 0.5,
-    color: "#000",
-    paddingVertical: 10,
+    paddingTop: 20,
   },
   subContainer: {
     gap: 20,

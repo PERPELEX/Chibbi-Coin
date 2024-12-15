@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
     color: "#000",
     marginBottom: 5,
     fontSize: 16,
+    fontWeight: 500,
   },
   profileDetailsText: {
     fontSize: 16,

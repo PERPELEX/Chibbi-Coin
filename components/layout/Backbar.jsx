@@ -10,7 +10,7 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 
-const Backbar = ({ name, url, avatar = false, imageUri }) => {
+const Backbar = ({ name, url, avatar = false, imageUri, close = false }) => {
   const navigation = useNavigation();
 
   const handlePress = () => {
@@ -38,7 +38,7 @@ const Backbar = ({ name, url, avatar = false, imageUri }) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity onPress={handlePress}>
-        <Icon name="arrow-left" size={24} color="#FFF" />
+        <Icon name={close ? "close" : "arrow-left"} size={24} color="#FFF" />
       </TouchableOpacity>
       <Text style={styles.headerTitle}>{name}</Text>
       {avatar ? (
