@@ -8,7 +8,7 @@ export const DataProvider = ({ children }) => {
       name: "John Doe",
       email: "john.doe@example.com",
       password: null,
-      currency: null,
+      currency: "PKR",
       imageUri: null,
     },
     budget: [
@@ -63,6 +63,19 @@ export const DataProvider = ({ children }) => {
       { id: 1, name: "Rent", amount: 800.0, date: "2024-12-01" },
       { id: 2, name: "Car Insurance", amount: 200.0, date: "2024-12-05" },
     ],
+    notifications: [
+      { id: 1, title: "Welcome", details: "Welcome to Chibi-Coin!" },
+      {
+        id: 2,
+        title: "Budget Alert",
+        details: "You have exceeded your budget for Food.",
+      },
+      {
+        id: 3,
+        title: "Goal Achieved",
+        details: "Congratulations! You have achieved your Bike goal.",
+      },
+    ],
   });
 
   const addBudget = (newBudget) => {
@@ -115,9 +128,37 @@ export const DataProvider = ({ children }) => {
     }));
   };
 
+  const updateUserImage = (imageUri) => {
+    setData((prevData) => ({
+      ...prevData,
+      user: {
+        ...prevData.user,
+        imageUri,
+      },
+    }));
+  };
+
+  const updateUserField = (field, value) => {
+    setData((prevData) => ({
+      ...prevData,
+      user: {
+        ...prevData.user,
+        [field]: value,
+      },
+    }));
+  };
+
   return (
     <DataContext.Provider
-      value={{ data, setData, addBudget, addGoal, updateGoal }}
+      value={{
+        data,
+        setData,
+        addBudget,
+        addGoal,
+        updateGoal,
+        updateUserImage,
+        updateUserField,
+      }}
     >
       {children}
     </DataContext.Provider>

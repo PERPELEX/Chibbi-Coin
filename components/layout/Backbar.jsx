@@ -5,11 +5,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   BackHandler,
+  Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 
-const Backbar = ({ name, url }) => {
+const Backbar = ({ name, url, avatar = false, imageUri }) => {
   const navigation = useNavigation();
 
   const handlePress = () => {
@@ -40,7 +41,15 @@ const Backbar = ({ name, url }) => {
         <Icon name="arrow-left" size={24} color="#FFF" />
       </TouchableOpacity>
       <Text style={styles.headerTitle}>{name}</Text>
-      <View style={{ width: 30 }} />
+      {avatar ? (
+        imageUri ? (
+          <Image source={{ uri: imageUri }} style={styles.avatarImage} />
+        ) : (
+          <Icon name="account-circle" size={30} color="#FFF" />
+        )
+      ) : (
+        <View style={{ width: 30 }} />
+      )}
     </View>
   );
 };
@@ -59,6 +68,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#FFF",
     fontWeight: "bold",
+  },
+  avatarImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    resizeMode: "cover",
   },
 });
 

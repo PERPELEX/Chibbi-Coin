@@ -1,63 +1,46 @@
-// src/components/Header.jsx
 import React, { useState, useContext } from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  Text,
-  Button,
-} from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import { DataContext } from "../contexts/DataContext";
 
 export default function Header() {
   const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
   const { data } = useContext(DataContext);
 
-  const openModal = () => {
-    setModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
+  const renderUsername = () => {
+    const username = data.user.name;
+    if (username.length > 16) {
+      return "Welcome";
+    } else if (username.length >= 10 && username.length <= 16) {
+      return username;
+    } else {
+      return `Welcome ${username}`;
+    }
   };
 
   return (
     <View style={styles.header}>
-      <TouchableOpacity onPress={() => navigation.navigate("User")} style={styles.iconContainer}>
-        <Icon name="account" color="#02192B" size={30} />
-      </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => navigation.navigate("Notification")}
+        onPress={() => navigation.navigate("User")}
         style={styles.iconContainer}
       >
-        <Icon name="bell" color="#02192B" size={25} />
+        {data.user.imageUri ? (
+          <Image
+            source={{ uri: data.user.imageUri }}
+            style={styles.avatarImage}
+          />
+        ) : (
+          <Icon name="account" color="#fff" size={30} />
+        )}
       </TouchableOpacity>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={closeModal}
+      <Text style={styles.username}>{renderUsername()}</Text>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Notifications")}
+        style={styles.iconContainer}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Account Details</Text>
-            {data.user ? (
-              <>
-                <Text style={styles.modalText}>Name: {data.user.name}</Text>
-                <Text style={styles.modalText}>Email: {data.user.email}</Text>
-              </>
-            ) : (
-              <Text style={styles.modalText}>No user data available</Text>
-            )}
-            <Button title="Close" onPress={closeModal} />
-          </View>
-        </View>
-      </Modal>
+        <Icon name="bell" color="#fff" size={25} />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -67,28 +50,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    // backgroundColor: "#000",
     paddingHorizontal: 10,
     width: "100%",
   },
   iconContainer: {
     padding: 10, // Increase the touchable area
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  avatarImage: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    resizeMode: "cover",
   },
-  modalContent: {
-    width: 300,
-    padding: 20,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 20,
+  username: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "500",
   },
 });
