@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useContext,useState} from "react";
 import {
   View,
   Text,
@@ -8,8 +8,22 @@ import {
   Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { DataContext } from "../contexts/DataContext";
 
 const LoginScreen = ({ navigation }) => {
+  const { data } = useContext(DataContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = () => {
+    if (email === data.user.email && password === data.user.password) {
+      Alert.alert("Success", "Login successful!");
+      navigation.navigate("Main", { screen: "Home" });
+    } else {
+      Alert.alert("Error", "Invalid email or password.");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -28,6 +42,8 @@ const LoginScreen = ({ navigation }) => {
           style={styles.input}
           placeholder="Enter your email"
           placeholderTextColor="#888"
+          value={email}
+          onChangeText={setEmail}
         />
       </View>
 
@@ -38,13 +54,15 @@ const LoginScreen = ({ navigation }) => {
           placeholder="Enter your password"
           placeholderTextColor="#888"
           secureTextEntry
+          value={password}
+          onChangeText={setPassword}
         />
       </View>
 
       <TouchableOpacity
         style={styles.loginButton}
-        onPress={() => navigation.navigate("Main", { screen: "Home" })} // Navigate to "Home" tab within "Main" stack
-        activeOpacity={0.7} // Adjusts opacity on press
+        onPress={handleLogin}
+        activeOpacity={0.7}
       >
         <Text style={styles.loginButtonText}>Login</Text>
         <Icon name="arrow-forward" size={20} color="#fff" />
@@ -54,14 +72,14 @@ const LoginScreen = ({ navigation }) => {
         Don’t have an account?{" "}
         <Text
           style={styles.signupText}
-          onPress={() => navigation.navigate("SignUp")} // Navigate to SignUp screen
+          onPress={() => navigation.navigate("SignUp")}
         >
           SignUp
         </Text>
       </Text>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate("Forgot")} // Navigate to ForgotPassword screen
+        onPress={() => navigation.navigate("Forgot")}
         activeOpacity={0.7}
       >
         <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
@@ -69,7 +87,6 @@ const LoginScreen = ({ navigation }) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

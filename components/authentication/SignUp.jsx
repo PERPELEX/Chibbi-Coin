@@ -8,8 +8,42 @@ import {
   Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import {DataContext} from "../contexts/DataContext"
+
 
 const CreateAccountScreen = ({ navigation }) => {
+  const { setData } = useContext(DataContext);
+
+  // Local state for form inputs
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSignUp = () => {
+    // Validate inputs
+    if (!name || !email || !password) {
+      Alert.alert("Error", "Please fill in all fields.");
+      return;
+    }
+
+    // Send data to context
+    setData((prevData) => ({
+      ...prevData,
+      user: {
+        ...prevData.user,
+        name,
+        email,
+        password,
+      },
+    }));
+
+    // Show confirmation or navigate to another screen
+    Alert.alert("Success", "Account created successfully!");
+
+    // Navigate to the next screen (e.g., Login or Profile)
+    navigation.navigate("Login");
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -27,6 +61,8 @@ const CreateAccountScreen = ({ navigation }) => {
           style={styles.input}
           placeholder="Name"
           placeholderTextColor="#888"
+          value={name}
+          onChangeText={setName}
         />
       </View>
 
@@ -36,6 +72,9 @@ const CreateAccountScreen = ({ navigation }) => {
           style={styles.input}
           placeholder="Email"
           placeholderTextColor="#888"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
         />
       </View>
 
@@ -46,10 +85,12 @@ const CreateAccountScreen = ({ navigation }) => {
           placeholder="Password"
           placeholderTextColor="#888"
           secureTextEntry
+          value={password}
+          onChangeText={setPassword}
         />
       </View>
 
-      <TouchableOpacity style={styles.signupButton}>
+      <TouchableOpacity style={styles.signupButton} onPress={handleSignUp}>
         <Text style={styles.signupButtonText}>Sign up</Text>
         <Icon name="arrow-forward" size={20} color="#fff" />
       </TouchableOpacity>
@@ -58,7 +99,7 @@ const CreateAccountScreen = ({ navigation }) => {
         Don’t have an account?{" "}
         <Text
           style={styles.loginText}
-          onPress={() => navigation.navigate("Login")} // Navigate to SignUp screen
+          onPress={() => navigation.navigate("Login")} // Navigate to Login screen
         >
           Login
         </Text>

@@ -31,7 +31,7 @@ export default function Header() {
         <Icon name="account" color="#02192B" size={30} />
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => navigation.navigate("Notifications")}
+        onPress={() => navigation.navigate("Notification")}
         style={styles.iconContainer}
       >
         <Icon name="bell" color="#02192B" size={25} />

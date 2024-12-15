@@ -1,12 +1,23 @@
-import React, { useContext } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, StatusBar, Alert } from "react-native";
-import * as ImagePicker from "expo-image-picker";
+import React, { useContext, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  StatusBar,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
+import * as ImagePicker from "expo-image-picker"; // Use expo-image-picker
 import RNPickerSelect from "react-native-picker-select";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import axios from "axios";
 import { DataContext } from "../contexts/DataContext";
 
 const User = ({ navigation }) => {
   const { data, setData } = useContext(DataContext);
+  const [uploading, setUploading] = useState(false);
 
   const handleCurrencyChange = (value) => {
     setData((prevData) => ({
@@ -18,35 +29,62 @@ const User = ({ navigation }) => {
     }));
   };
 
-  const pickImage = async () => {
+  const pickImageAndUpload = async () => {
     try {
+      // Request media library permissions
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permissionResult.granted) {
-        Alert.alert("Permission required", "You need to grant camera roll permissions to select a photo.");
+        Alert.alert("Permission required", "Please allow access to your media library.");
         return;
       }
 
+      // Launch the image picker
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [1, 1],
         quality: 1,
       });
 
-      if (!result.canceled) {
-        const imageUri = result.assets[0].uri;
-
-        // Update imageUri in context
-        setData((prevData) => ({
-          ...prevData,
-          user: {
-            ...prevData.user,
-            imageUri,
-          },
-        }));
+      if (result.canceled) {
+        console.log("User canceled image picker.");
+        return;
       }
+
+      const imageUri = result.assets[0].uri;
+
+      // Update user data with the selected image URI
+      setData((prevData) => ({
+        ...prevData,
+        user: {
+          ...prevData.user,
+          imageUri,
+        },
+      }));
+
+      // Prepare the image for upload
+      const formData = new FormData();
+      formData.append("profile_picture", {
+        uri: imageUri,
+        type: "image/jpeg",
+        name: "profile.jpg",
+      });
+
+      // Upload the image to the server
+      setUploading(true);
+      const response = await axios.post(
+        "http://your-backend-url/api/users/upload-profile",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      setUploading(false);
+      Alert.alert("Success", "Profile picture uploaded successfully!");
     } catch (error) {
-      console.error("Error selecting image:", error);
+      setUploading(false);
+      console.error("Error uploading image:", error);
+      Alert.alert("Upload Failed", "Something went wrong during the upload.");
     }
   };
 
@@ -67,8 +105,13 @@ const User = ({ navigation }) => {
 
       {/* Profile Image */}
       <View style={styles.profileContainer}>
-        <TouchableOpacity onPress={pickImage} style={styles.profileImageContainer}>
-          {data.user.imageUri ? (
+        <TouchableOpacity
+          onPress={pickImageAndUpload}
+          style={styles.profileImageContainer}
+        >
+          {uploading ? (
+            <ActivityIndicator size="large" color="#2BCB79" />
+          ) : data.user.imageUri ? (
             <Image source={{ uri: data.user.imageUri }} style={styles.profileImage} />
           ) : (
             <Text style={styles.addPhotoText}>Add a Photo</Text>
@@ -96,13 +139,17 @@ const User = ({ navigation }) => {
 
       {/* Logout Button */}
       <View style={styles.button}>
-        <TouchableOpacity onPress={() => navigation.navigate("Login")} style={styles.logoutButton}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Login")}
+          style={styles.logoutButton}
+        >
           <Text style={styles.logoutButtonText}>Logout</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

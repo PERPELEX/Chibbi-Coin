@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -6,10 +6,32 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { DataContext } from "../contexts/DataContext";
 
 const ConfirmPassword = ({ navigation }) => {
+  const { data, setData } = useContext(DataContext); // Access user data context
+  const [password, setPassword] = useState("");
+
+  const handlePasswordUpdate = () => {
+    if (password.length < 6) {
+      Alert.alert("Error", "Password must be at least 6 characters long.");
+      return;
+    }
+
+    // Mock updating password in user data
+    setData((prevData) => ({
+      ...prevData,
+      user: { ...prevData.user, password }, // Update password for the user
+    }));
+
+    Alert.alert("Success", "Your password has been updated!", [
+      { text: "OK", onPress: () => navigation.navigate("Login") }, // Navigate to Login screen
+    ]);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -18,26 +40,25 @@ const ConfirmPassword = ({ navigation }) => {
           style={styles.logoImg}
         />
       </View>
-      <Text style={styles.title}>Enter New Password</Text>
       <View style={styles.inputContainer}>
         <Icon name="lock" size={20} color="green" style={styles.icon} />
         <TextInput
           style={styles.input}
-          placeholder="Enter your password"
+          placeholder="Enter your new password"
           placeholderTextColor="#888"
           secureTextEntry
+          value={password}
+          onChangeText={setPassword}
         />
       </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate("Login")}
-      >
+      <TouchableOpacity style={styles.button} onPress={handlePasswordUpdate}>
         <Text style={styles.buttonText}>Confirm</Text>
         <Icon name="verified" size={20} color="white" />
       </TouchableOpacity>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
