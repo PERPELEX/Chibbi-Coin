@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -7,134 +7,140 @@ import {
   TouchableOpacity,
   StatusBar,
   Alert,
+  ActivityIndicator,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
+import * as ImagePicker from "expo-image-picker"; // Use expo-image-picker
 import RNPickerSelect from "react-native-picker-select";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import axios from "axios";
+import { DataContext } from "../contexts/DataContext";
 
-const User = () => {
-  const [imageUri, setImageUri] = useState(null);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [currency, setCurrency] = useState("$");
+const User = ({ navigation }) => {
+  const { data, setData } = useContext(DataContext);
+  const [uploading, setUploading] = useState(false);
 
-  const userName = async () => {
-    try {
-      const fetch = await fetch(
-        "https://run.mocky.io/v3/9298869e-b91a-47ea-91a8-5c517d358cd3"
-      );
-      const data = await fetch.json();
-      setName(data.name);
-      setEmail(data.email);
-    } catch (error) {
-      console.log(error);
-    }
+  const handleCurrencyChange = (value) => {
+    setData((prevData) => ({
+      ...prevData,
+      user: {
+        ...prevData.user,
+        currency: value,
+      },
+    }));
   };
 
-  const pickImage = async () => {
+  const pickImageAndUpload = async () => {
     try {
-      console.log("Requesting media library permission...");
-      const permissionResult =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (permissionResult.granted === false) {
-        console.log("Permission denied.");
-        Alert.alert(
-          "Permission required",
-          "You need to grant camera roll permissions to select a photo."
-        );
+      // Request media library permissions
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        Alert.alert("Permission required", "Please allow access to your media library.");
         return;
       }
-      console.log("Permission granted.");
 
-      console.log("Opening image picker...");
-      let result = await ImagePicker.launchImageLibraryAsync({
+      // Launch the image picker
+      const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [1, 1],
         quality: 1,
       });
 
-      console.log("Image picker result:", result);
-
       if (result.canceled) {
-        console.log("User cancelled image picker.");
-        Alert.alert("No image selected", "You didn't select an image.");
+        console.log("User canceled image picker.");
         return;
-      } else {
-        const imageUri = result.assets[0].uri;
-        console.log("Image selected:", imageUri);
-        setImageUri(imageUri);
       }
+
+      const imageUri = result.assets[0].uri;
+
+      // Update user data with the selected image URI
+      setData((prevData) => ({
+        ...prevData,
+        user: {
+          ...prevData.user,
+          imageUri,
+        },
+      }));
+
+      // Prepare the image for upload
+      const formData = new FormData();
+      formData.append("profile_picture", {
+        uri: imageUri,
+        type: "image/jpeg",
+        name: "profile.jpg",
+      });
+
+      // Upload the image to the server
+      setUploading(true);
+      const response = await axios.post(
+        "http://your-backend-url/api/users/upload-profile",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      setUploading(false);
+      Alert.alert("Success", "Profile picture uploaded successfully!");
     } catch (error) {
-      console.log("Error selecting image:", error);
+      setUploading(false);
+      console.error("Error uploading image:", error);
+      Alert.alert("Upload Failed", "Something went wrong during the upload.");
     }
   };
 
-  useEffect(() => {
-    userName();
-  }, []);
-
   return (
     <View style={styles.container}>
-      <StatusBar
-        backgroundColor={"#2BCB79"}
-        shadowColor={"#000"}
-        marginBottom={20}
-      ></StatusBar>
+      <StatusBar backgroundColor="#2BCB79" barStyle="light-content" />
 
+      {/* Header */}
       <View style={styles.heading}>
+        <Icon name="menu" size={30} color="#fff" />
         <Text style={styles.headingText}>Profile</Text>
-        <Image style={styles.image} source={{ uri: imageUri }} />
+        {data.user.imageUri ? (
+          <Image style={styles.image} source={{ uri: data.user.imageUri }} />
+        ) : (
+          <Icon name="account-circle" size={35} color="#fff" />
+        )}
       </View>
 
+      {/* Profile Image */}
       <View style={styles.profileContainer}>
         <TouchableOpacity
-          onPress={pickImage}
+          onPress={pickImageAndUpload}
           style={styles.profileImageContainer}
         >
-          {imageUri ? (
-            <Image source={{ uri: imageUri }} style={styles.profileImage} />
+          {uploading ? (
+            <ActivityIndicator size="large" color="#2BCB79" />
+          ) : data.user.imageUri ? (
+            <Image source={{ uri: data.user.imageUri }} style={styles.profileImage} />
           ) : (
             <Text style={styles.addPhotoText}>Add a Photo</Text>
           )}
         </TouchableOpacity>
       </View>
 
+      {/* Profile Details */}
       <View style={styles.profileDetailsContainer}>
-        <Text style={styles.profileDetailsText}>Name: {name}</Text>
-        <Text style={styles.profileDetailsText}>Email: {email}</Text>
+        <Text style={styles.profileDetailsText}>{data.user.name}</Text>
+        <Text style={styles.profileDetailsText}>{data.user.email}</Text>
 
         {/* Currency Selector */}
-        <Text style={styles.profileDetailsText}>Currency:</Text>
+        <Text style={styles.profileDetailsText}>Currency</Text>
         <RNPickerSelect
-          onValueChange={(value) => setCurrency(value)}
+          onValueChange={handleCurrencyChange}
           items={[
             { label: "$ USD", value: "$" },
             { label: "Rs PKR", value: "Rs" },
           ]}
-          value={currency}
-          style={{
-            inputAndroid: {
-              backgroundColor: "white",
-              borderColor: "#2BCB79",
-              borderWidth: 1,
-              padding: 10,
-              borderRadius: 5,
-              color: "#000",
-            },
-            inputIOS: {
-              backgroundColor: "white",
-              borderColor: "#2BCB79",
-              borderWidth: 1,
-              padding: 10,
-              borderRadius: 5,
-              color: "#000",
-            },
-          }}
+          value={data.user.currency}
+          style={pickerStyles}
         />
       </View>
+
+      {/* Logout Button */}
       <View style={styles.button}>
         <TouchableOpacity
-          onPress={() => console.log("Logout")}
+          onPress={() => navigation.navigate("Login")}
           style={styles.logoutButton}
         >
           <Text style={styles.logoutButtonText}>Logout</Text>
@@ -143,6 +149,7 @@ const User = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -153,27 +160,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
     backgroundColor: "#2BCB79",
-    shadowColor: "#000",
   },
   headingText: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 10,
     color: "white",
-    paddingLeft: 10,
   },
   image: {
     width: 35,
-    height: 30,
-    borderRadius: 20,
-    marginRight: 10,
-    resizeMode: "contain",
+    height: 35,
+    borderRadius: 25,
+    resizeMode: "cover",
   },
   profileContainer: {
     alignItems: "center",
-    justifyContent: "center",
+    marginTop: 20,
   },
   profileImageContainer: {
     width: 150,
@@ -183,7 +187,6 @@ const styles = StyleSheet.create({
     borderColor: "#2BCB79",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20,
   },
   profileImage: {
     width: 150,
@@ -197,16 +200,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   profileDetailsContainer: {
-    alignItems: "flex-start",
-    justifyContent: "center",
-    paddingLeft: 10,
-    backgroundColor: "#f5f5f5",
+    alignItems: "center",
+    backgroundColor: "#2BCB79",
     padding: 20,
+    borderRadius: 10,
+    marginHorizontal: 20,
+    marginTop: 20,
   },
   profileDetailsText: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
+    color: "white",
     marginBottom: 10,
   },
   button: {
@@ -220,9 +223,28 @@ const styles = StyleSheet.create({
   },
   logoutButtonText: {
     fontSize: 16,
-    fontWeight: "bold",
     color: "#fff",
+    fontWeight: "bold",
   },
 });
+
+const pickerStyles = {
+  inputAndroid: {
+    backgroundColor: "white",
+    borderColor: "#2BCB79",
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+    color: "#000",
+  },
+  inputIOS: {
+    backgroundColor: "white",
+    borderColor: "#2BCB79",
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+    color: "#000",
+  },
+};
 
 export default User;

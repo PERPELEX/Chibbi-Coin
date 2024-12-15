@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -6,10 +6,41 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { DataContext } from "../contexts/DataContext";
 
 const ForgotPassword = ({ navigation }) => {
+  const { data, setData } = useContext(DataContext);
+  const [email, setEmail] = useState("");
+  const [verificationKey, setVerificationKey] = useState("");
+  const [generatedKey, setGeneratedKey] = useState(null); // Simulate key generation
+  const [keySent, setKeySent] = useState(false);
+
+  const handleSendKey = () => {
+    const user = data.user;
+
+    if (email === user.email) {
+      // Simulate key generation and sending
+      const key = Math.floor(1000 + Math.random() * 9000).toString(); // Generate a 4-digit code
+      setGeneratedKey(key);
+      setKeySent(true);
+      Alert.alert("Success", `Verification key sent to ${email}!`);
+    } else {
+      Alert.alert("Error", "Email not found.");
+    }
+  };
+
+  const handleVerifyKey = () => {
+    if (verificationKey === generatedKey) {
+      Alert.alert("Success", "Key verified! Proceed to reset password.");
+      navigation.navigate("Confirm"); // Navigate to ConfirmPassword screen
+    } else {
+      Alert.alert("Error", "Invalid verification key.");
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -25,32 +56,36 @@ const ForgotPassword = ({ navigation }) => {
           style={styles.input}
           placeholder="Enter your email"
           placeholderTextColor="#888"
+          value={email}
+          onChangeText={setEmail}
         />
       </View>
 
-      <View style={styles.inputContainer}>
-        <Icon name="key" size={20} color="green" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="key"
-          placeholderTextColor="#888"
-        />
-      </View>
+      {keySent && (
+        <View style={styles.inputContainer}>
+          <Icon name="key" size={20} color="green" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter verification key"
+            placeholderTextColor="#888"
+            value={verificationKey}
+            onChangeText={setVerificationKey}
+          />
+        </View>
+      )}
 
       <View style={styles.buttons}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>Verify </Text>
-          <Icon name="verified" width={40} color="white" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("Confirm")} // Navigate to ConfirmPassword screen
-          activeOpacity={0.7}
-        >
-          <Text style={styles.buttonText}>Send</Text>
-          <Icon name="send" size={20} color="white" />
-        </TouchableOpacity>
+        {keySent ? (
+          <TouchableOpacity style={styles.button} onPress={handleVerifyKey}>
+            <Text style={styles.buttonText}>Verify</Text>
+            <Icon name="verified" size={20} color="white" />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={handleSendKey}>
+            <Text style={styles.buttonText}>Send Key</Text>
+            <Icon name="send" size={20} color="white" />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

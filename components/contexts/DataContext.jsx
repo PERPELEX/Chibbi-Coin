@@ -7,6 +7,9 @@ export const DataProvider = ({ children }) => {
     user: {
       name: "John Doe",
       email: "john.doe@example.com",
+      password: null,
+      currency: null,
+      imageUri: null,
     },
     budget: [
       {
