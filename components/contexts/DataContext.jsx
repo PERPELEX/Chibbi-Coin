@@ -17,8 +17,8 @@ export const DataProvider = ({ children }) => {
         duration: "Month",
         categories: ["Food and Drinks"],
         date: new Date(),
-        startDate: null, // For "one-time" budgets, optional
-        endDate: null, // For "one-time" budgets, optional
+        startDate: null,
+        endDate: null,
       },
       {
         id: 2,
@@ -68,15 +68,15 @@ export const DataProvider = ({ children }) => {
       budget: [
         ...prevData.budget,
         {
-          id: Date.now(), // Generate unique ID
+          id: Date.now(),
           name: newBudget.name,
           amount: newBudget.amount,
-          spent: newBudget.spent || 0, // Default spent to 0 if not provided
+          spent: newBudget.spent || 0,
           duration: newBudget.duration,
-          categories: newBudget.categories || [], // Default to empty array if not provided
-          date: new Date(), // Automatically set to current date
-          startDate: newBudget.startDate || null, // Optional for "one-time" budgets
-          endDate: newBudget.endDate || null, // Optional for "one-time" budgets
+          categories: newBudget.categories || [],
+          date: new Date(),
+          startDate: newBudget.startDate || null,
+          endDate: newBudget.endDate || null,
         },
       ],
     }));
@@ -88,11 +88,11 @@ export const DataProvider = ({ children }) => {
       goals: [
         ...prevData.goals,
         {
-          id: Date.now(), // Generate unique ID
+          id: Date.now(),
           name: newGoal.name,
           target: newGoal.target,
-          saved: newGoal.saved || 0, // Default saved to 0 if not provided
-          desiredDate: newGoal.desiredDate || new Date(), // Default to current date if not provided
+          saved: newGoal.saved || 0,
+          desiredDate: newGoal.desiredDate || new Date(),
         },
       ],
     }));
@@ -106,15 +106,37 @@ export const DataProvider = ({ children }) => {
           ? {
               ...goal,
               saved: parseFloat((goal.saved + amountToAdd).toFixed(2)),
-            } // Ensure precision
+            }
           : goal
       ),
     }));
   };
 
+  const deleteGoal = (goalId) => {
+    setData((prevData) => ({
+      ...prevData,
+      goals: prevData.goals.filter((goal) => goal.id !== goalId),
+    }));
+  };
+
+  const deleteBudget = (budgetId) => {
+    setData((prevData) => ({
+      ...prevData,
+      budget: prevData.budget.filter((budget) => budget.id !== budgetId),
+    }));
+  };
+
   return (
     <DataContext.Provider
-      value={{ data, setData, addBudget, addGoal, updateGoal }}
+      value={{
+        data,
+        setData,
+        addBudget,
+        addGoal,
+        updateGoal,
+        deleteGoal,
+        deleteBudget,
+      }}
     >
       {children}
     </DataContext.Provider>

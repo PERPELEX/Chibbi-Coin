@@ -1,250 +1,3 @@
-// import React, { useState, useEffect, useContext } from "react";
-// import {
-//   View,
-//   Text,
-//   TextInput,
-//   StyleSheet,
-//   ScrollView,
-//   Alert,
-//   TouchableOpacity,
-// } from "react-native";
-// import DateTimePicker from "@react-native-community/datetimepicker";
-// import { useNavigation } from "@react-navigation/native";
-// import { DataContext } from "../contexts/DataContext";
-// import { formatDate } from "../utils/dateUtils"; // Import the utility function
-// import { Picker } from "@react-native-picker/picker"; // Import Picker from the new package
-
-// export default function CreateBudget() {
-//   const { addBudget } = useContext(DataContext);
-//   const navigation = useNavigation();
-//   const [name, setName] = useState("");
-//   const [amount, setAmount] = useState("");
-//   const [duration, setDuration] = useState("weekly");
-//   const [categories, setCategories] = useState([]);
-//   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-//   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-//   const [startDate, setStartDate] = useState(new Date());
-//   const [endDate, setEndDate] = useState(new Date());
-
-//   useEffect(() => {
-//     // Reset fields when the component is mounted
-//     setName("");
-//     setAmount("");
-//     setDuration("weekly");
-//     setCategories([]);
-//     setStartDate(new Date());
-//     setEndDate(new Date());
-//   }, []);
-
-//   const handleSave = () => {
-//     if (name && amount && categories.length > 0) {
-//       const newBudget = {
-//         name,
-//         amount: parseFloat(amount),
-//         spent: 0,
-//         duration,
-//         categories,
-//         startDate: duration === "one-time" ? startDate : null,
-//         endDate: duration === "one-time" ? endDate : null,
-//       };
-//       addBudget(newBudget);
-//       navigation.goBack();
-//     } else {
-//       Alert.alert("Validation Error", "Please fill in all fields.");
-//     }
-//   };
-
-//   const handleCategoryChange = (category) => {
-//     setCategories((prevCategories) =>
-//       prevCategories.includes(category)
-//         ? prevCategories.filter((cat) => cat !== category)
-//         : [...prevCategories, category]
-//     );
-//   };
-
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.title}>Create Budget</Text>
-//       <ScrollView>
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Budget Name"
-//           value={name}
-//           onChangeText={setName}
-//         />
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Budget Amount"
-//           value={amount}
-//           onChangeText={setAmount}
-//           keyboardType="numeric"
-//         />
-//         <Text style={styles.label}>Duration</Text>
-//         <Picker
-//           selectedValue={duration}
-//           style={styles.picker}
-//           onValueChange={(itemValue) => setDuration(itemValue)}
-//         >
-//           <Picker.Item label="Week" value="weekly" />
-//           <Picker.Item label="Month" value="monthly" />
-//           <Picker.Item label="Year" value="yearly" />
-//           <Picker.Item label="One-Time" value="one-time" />
-//         </Picker>
-//         {duration === "one-time" && (
-//           <>
-//             <TouchableOpacity
-//               style={styles.dateButton}
-//               onPress={() => setShowStartDatePicker(true)}
-//             >
-//               <Text style={styles.buttonText}>Select Start Date</Text>
-//             </TouchableOpacity>
-//             {showStartDatePicker && (
-//               <DateTimePicker
-//                 value={startDate}
-//                 mode="date"
-//                 display="spinner"
-//                 onChange={(event, date) => {
-//                   setShowStartDatePicker(false);
-//                   if (date) setStartDate(date);
-//                 }}
-//               />
-//             )}
-//             <Text style={styles.selectedDate}>
-//               Start Date: {formatDate(startDate)}
-//             </Text>
-//             <TouchableOpacity
-//               style={styles.dateButton}
-//               onPress={() => setShowEndDatePicker(true)}
-//             >
-//               <Text style={styles.buttonText}>Select End Date</Text>
-//             </TouchableOpacity>
-//             {showEndDatePicker && (
-//               <DateTimePicker
-//                 value={endDate}
-//                 mode="date"
-//                 display="spinner"
-//                 onChange={(event, date) => {
-//                   setShowEndDatePicker(false);
-//                   if (date) setEndDate(date);
-//                 }}
-//               />
-//             )}
-//             <Text style={styles.selectedDate}>
-//               End Date: {formatDate(endDate)}
-//             </Text>
-//           </>
-//         )}
-//         <Text style={styles.label}>Categories</Text>
-//         {[
-//           "Food and Drinks",
-//           "Shopping",
-//           "Transportation",
-//           "Studies",
-//           "Others",
-//         ].map((category) => (
-//           <View key={category} style={styles.checkboxContainer}>
-//             <TouchableOpacity onPress={() => handleCategoryChange(category)}>
-//               <Text style={styles.checkbox}>
-//                 {categories.includes(category) ? "☑" : "☐"} {category}
-//               </Text>
-//             </TouchableOpacity>
-//           </View>
-//         ))}
-//       </ScrollView>
-//       <View style={styles.buttonContainer}>
-//         <TouchableOpacity
-//           style={styles.cancelBtn}
-//           onPress={() => navigation.goBack()}
-//         >
-//           <Text style={styles.buttonText}>Cancel</Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
-//           <Text style={styles.buttonText}>Save</Text>
-//         </TouchableOpacity>
-//       </View>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 20,
-//     backgroundColor: "#E8F5E9", // Light background color
-//   },
-//   title: {
-//     fontSize: 24,
-//     fontWeight: "bold",
-//     marginBottom: 20,
-//     textAlign: "center",
-//   },
-//   input: {
-//     height: 45,
-//     borderColor: "#A5D6A7", // Light green border
-//     borderWidth: 1,
-//     borderRadius: 5, // Rounded corners
-//     marginBottom: 15,
-//     paddingHorizontal: 10,
-//     backgroundColor: "#FFFFFF", // White background for inputs
-//   },
-//   label: {
-//     fontSize: 16,
-//     fontWeight: "bold",
-//     marginBottom: 5,
-//   },
-//   picker: {
-//     height: 50,
-//     marginBottom: 15,
-//     borderColor: "#A5D6A7",
-//     borderWidth: 1,
-//     borderRadius: 5,
-//     backgroundColor: "#FFFFFF",
-//   },
-//   checkboxContainer: {
-//     flexDirection: "row",
-//     alignItems: "center",
-//     marginBottom: 10,
-//   },
-//   checkbox: {
-//     fontSize: 18,
-//     marginRight: 10,
-//   },
-//   selectedDate: {
-//     marginTop: 10,
-//     marginBottom: 10,
-//     textAlign: "center",
-//   },
-//   dateButton: {
-//     backgroundColor: "#34c759", // Button color
-//     padding: 15,
-//     borderRadius: 5,
-//     marginBottom: 15,
-//   },
-//   buttonContainer: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//     marginTop: 20,
-//   },
-//   saveBtn: {
-//     backgroundColor: "#34c759",
-//     padding: 15,
-//     borderRadius: 5,
-//     flex: 1,
-//   },
-//   cancelBtn: {
-//     backgroundColor: "tomato",
-//     padding: 15,
-//     borderRadius: 5,
-//     flex: 1,
-//     marginRight: 10,
-//   },
-//   buttonText: {
-//     color: "white",
-//     textAlign: "center",
-//     fontWeight: "bold",
-//   },
-// });
-
 import React, { useState, useEffect, useContext } from "react";
 import {
   View,
@@ -256,20 +9,15 @@ import {
   TouchableOpacity,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { DataContext } from "../contexts/DataContext";
-import { formatDate } from "../utils/dateUtils"; // Import the utility function
-import { Picker } from "@react-native-picker/picker"; // Import Picker from the new package
+import { formatDate } from "../utils/dateUtils";
+import { Picker } from "@react-native-picker/picker";
 import DefaultLayout from "../layout/DefaultLayout";
 import Backbar from "../layout/Backbar";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-// Utility function to format numbers with commas
-const formatWithCommas = (value) => {
-  const numericValue = value.replace(/[^\d]/g, ""); // Remove non-digit characters
-  return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Add commas
-};
-
-export default function CreateBudget() {
+const CreateBudget = () => {
   const { addBudget } = useContext(DataContext);
   const navigation = useNavigation();
   const [name, setName] = useState("");
@@ -280,22 +28,35 @@ export default function CreateBudget() {
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    // Reset fields when the component is mounted
-    setName("");
-    setAmount("");
-    setDuration("weekly");
-    setCategories([]);
-    setStartDate(new Date());
-    setEndDate(new Date());
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      setName("");
+      setAmount("");
+      setDuration("weekly");
+      setCategories([]);
+      setStartDate(new Date());
+      setEndDate(new Date());
+      setErrors({});
+    }, [])
+  );
+
+  const validateFields = () => {
+    const newErrors = {};
+    if (!name.trim()) newErrors.name = "Budget name is required.";
+    if (!amount.trim()) newErrors.amount = "Budget amount is required.";
+    if (categories.length === 0)
+      newErrors.categories = "At least one category is required.";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSave = () => {
-    if (name && amount && categories.length > 0) {
+    if (validateFields()) {
       const newBudget = {
         name,
-        amount: parseFloat(amount.replace(/,/g, "")), // Remove commas for calculation
+        amount: parseFloat(amount.replace(/,/g, "")),
         spent: 0,
         duration,
         categories,
@@ -305,7 +66,10 @@ export default function CreateBudget() {
       addBudget(newBudget);
       navigation.goBack();
     } else {
-      Alert.alert("Validation Error", "Please fill in all fields.");
+      const firstErrorField = Object.keys(errors)[0];
+      if (firstErrorField) {
+        Alert.alert("Validation Error", errors[firstErrorField]);
+      }
     }
   };
 
@@ -317,6 +81,11 @@ export default function CreateBudget() {
     );
   };
 
+  const formatWithCommas = (value) => {
+    const numericValue = value.replace(/[^\d]/g, "");
+    return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   const handleAmountChange = (text) => {
     const formattedValue = formatWithCommas(text);
     setAmount(formattedValue);
@@ -326,21 +95,24 @@ export default function CreateBudget() {
     <DefaultLayout>
       <Backbar name="Create Budget" url="Details" />
       <View style={styles.container}>
-        <Text style={styles.title}>Create Budget</Text>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, errors.name && { borderColor: "red" }]}
             placeholder="Budget Name"
             value={name}
             onChangeText={setName}
           />
+          {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
           <TextInput
-            style={styles.input}
+            style={[styles.input, errors.amount && { borderColor: "red" }]}
             placeholder="Budget Amount"
             value={amount}
-            onChangeText={handleAmountChange} // Use the new input handler
+            onChangeText={handleAmountChange}
             keyboardType="numeric"
           />
+          {errors.amount && (
+            <Text style={styles.errorText}>{errors.amount}</Text>
+          )}
           <Text style={styles.label}>Duration</Text>
           <Picker
             selectedValue={duration}
@@ -352,13 +124,15 @@ export default function CreateBudget() {
             <Picker.Item label="Year" value="yearly" />
             <Picker.Item label="One-Time" value="one-time" />
           </Picker>
-          {duration === "one-time" && (
+          {/* {duration === "one-time" && (
             <>
               <TouchableOpacity
-                style={styles.dateButton}
+                style={styles.dateField}
                 onPress={() => setShowStartDatePicker(true)}
               >
-                <Text style={styles.buttonText}>Select Start Date</Text>
+                <Text style={styles.dateFieldText}>
+                  {startDate ? formatDate(startDate) : "Select Start Date"}
+                </Text>
               </TouchableOpacity>
               {showStartDatePicker && (
                 <DateTimePicker
@@ -371,14 +145,13 @@ export default function CreateBudget() {
                   }}
                 />
               )}
-              <Text style={styles.selectedDate}>
-                Start Date: {formatDate(startDate)}
-              </Text>
               <TouchableOpacity
-                style={styles.dateButton}
+                style={styles.dateField}
                 onPress={() => setShowEndDatePicker(true)}
               >
-                <Text style={styles.buttonText}>Select End Date</Text>
+                <Text style={styles.dateFieldText}>
+                  {endDate ? formatDate(endDate) : "Select End Date"}
+                </Text>
               </TouchableOpacity>
               {showEndDatePicker && (
                 <DateTimePicker
@@ -391,35 +164,97 @@ export default function CreateBudget() {
                   }}
                 />
               )}
-              <Text style={styles.selectedDate}>
-                End Date: {formatDate(endDate)}
-              </Text>
+            </>
+          )} */}
+          {/* Inside the JSX of the CreateBudget component */}
+          {duration === "one-time" && (
+            <>
+              <View style={styles.dateFieldsContainer}>
+                <View style={styles.dateFieldWrapper}>
+                  <Text style={styles.dateLabel}>Start Date</Text>
+                  <TouchableOpacity
+                    style={styles.dateField}
+                    onPress={() => setShowStartDatePicker(true)}
+                  >
+                    <Text style={styles.dateFieldText}>
+                      {startDate ? formatDate(startDate) : "Select Start Date"}
+                    </Text>
+                  </TouchableOpacity>
+                  {showStartDatePicker && (
+                    <DateTimePicker
+                      value={startDate}
+                      mode="date"
+                      display="spinner"
+                      onChange={(event, date) => {
+                        setShowStartDatePicker(false);
+                        if (date) setStartDate(date);
+                      }}
+                    />
+                  )}
+                </View>
+                <View style={styles.dateFieldWrapper}>
+                  <Text style={styles.dateLabel}>End Date</Text>
+                  <TouchableOpacity
+                    style={styles.dateField}
+                    onPress={() => setShowEndDatePicker(true)}
+                  >
+                    <Text style={styles.dateFieldText}>
+                      {endDate ? formatDate(endDate) : "Select End Date"}
+                    </Text>
+                  </TouchableOpacity>
+                  {showEndDatePicker && (
+                    <DateTimePicker
+                      value={endDate}
+                      mode="date"
+                      display="spinner"
+                      onChange={(event, date) => {
+                        setShowEndDatePicker(false);
+                        if (date) setEndDate(date);
+                      }}
+                    />
+                  )}
+                </View>
+              </View>
             </>
           )}
+
           <Text style={styles.label}>Categories</Text>
+          {errors.categories && (
+            <Text style={styles.errorText}>{errors.categories}</Text>
+          )}
           {[
-            "Food and Drinks",
-            "Shopping",
-            "Transportation",
-            "Studies",
-            "Others",
+            { name: "Food and Drinks", icon: "food" },
+            { name: "Shopping", icon: "cart" },
+            { name: "Transportation", icon: "bus" },
+            { name: "Studies", icon: "school" },
+            { name: "Others", icon: "dots-horizontal" },
           ].map((category) => (
-            <View key={category} style={styles.checkboxContainer}>
-              <TouchableOpacity onPress={() => handleCategoryChange(category)}>
-                <Text style={styles.checkbox}>
-                  {categories.includes(category) ? "☑" : "☐"} {category}
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity
+              key={category.name}
+              style={[
+                styles.chip,
+                categories.includes(category.name) && styles.chipSelected,
+              ]}
+              onPress={() => handleCategoryChange(category.name)}
+            >
+              <Icon
+                name={category.icon}
+                size={18}
+                color={categories.includes(category.name) ? "#347AF0" : "#555"}
+                style={styles.icon}
+              />
+              <Text
+                style={[
+                  styles.chipText,
+                  categories.includes(category.name) && styles.chipTextSelected,
+                ]}
+              >
+                {category.name}
+              </Text>
+            </TouchableOpacity>
           ))}
         </ScrollView>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.cancelBtn}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.buttonText}>Cancel</Text>
-          </TouchableOpacity>
           <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
             <Text style={styles.buttonText}>Save</Text>
           </TouchableOpacity>
@@ -427,83 +262,125 @@ export default function CreateBudget() {
       </View>
     </DefaultLayout>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#E8F5E9", // Light background color
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
+    paddingTop: 60,
+    backgroundColor: "#F6F8FA",
   },
   input: {
-    height: 45,
-    borderColor: "#A5D6A7", // Light green border
+    height: 50,
+    borderColor: "#D1D9E6",
     borderWidth: 1,
-    borderRadius: 5, // Rounded corners
+    borderRadius: 8,
     marginBottom: 15,
-    paddingHorizontal: 10,
-    backgroundColor: "#FFFFFF", // White background for inputs
+    paddingHorizontal: 15,
+    backgroundColor: "#FFF",
+    fontSize: 16,
   },
   label: {
     fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
+    color: "#555",
+    marginBottom: 8,
   },
   picker: {
     height: 50,
     marginBottom: 15,
-    borderColor: "#A5D6A7",
-    borderWidth: 1,
-    borderRadius: 5,
-    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
+    backgroundColor: "#FFF",
+    paddingHorizontal: 15,
+    fontSize: 16,
   },
-  checkboxContainer: {
+  dateFieldsContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  checkbox: {
-    fontSize: 18,
-    marginRight: 10,
-  },
-  selectedDate: {
-    marginTop: 10,
-    marginBottom: 10,
-    textAlign: "center",
-  },
-  dateButton: {
-    backgroundColor: "#34c759", // Button color
-    padding: 15,
-    borderRadius: 5,
+    justifyContent: "space-between",
     marginBottom: 15,
   },
+  dateFieldWrapper: {
+    flex: 1,
+    marginRight: 10,
+  },
+  dateLabel: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  dateField: {
+    height: 50,
+    borderColor: "#D1D9E6",
+    borderWidth: 1,
+    borderRadius: 8,
+    justifyContent: "center",
+    backgroundColor: "#FFF",
+    paddingHorizontal: 15,
+  },
+  dateFieldText: {
+    fontSize: 16,
+    color: "#555",
+    textAlign: "center",
+  },
+  // dateField: {
+  //   height: 50,
+  //   borderColor: "#D1D9E6",
+  //   borderWidth: 1,
+  //   borderRadius: 8,
+  //   marginBottom: 15,
+  //   paddingHorizontal: 15,
+  //   justifyContent: "center",
+  //   backgroundColor: "#FFF",
+  // },
+  // dateFieldText: {
+  //   fontSize: 16,
+  //   color: "#555",
+  // },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 20,
   },
   saveBtn: {
-    backgroundColor: "#34c759",
+    backgroundColor: "#2BCB79",
     padding: 15,
-    borderRadius: 5,
+    borderRadius: 8,
     flex: 1,
-  },
-  cancelBtn: {
-    backgroundColor: "tomato",
-    padding: 15,
-    borderRadius: 5,
-    flex: 1,
-    marginRight: 10,
+    alignItems: "center",
   },
   buttonText: {
-    color: "white",
-    textAlign: "center",
+    color: "#FFF",
     fontWeight: "bold",
+    fontSize: 16,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginBottom: 8,
+  },
+  chip: {
+    backgroundColor: "#EFF3F6",
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    marginRight: 10,
+    marginBottom: 10,
+  },
+  chipSelected: {
+    backgroundColor: "#D1E9FF",
+    borderColor: "#347AF0",
+  },
+  chipText: {
+    color: "#555",
+    fontSize: 14,
+  },
+  chipTextSelected: {
+    color: "#347AF0",
+  },
+  icon: {
+    marginRight: 8,
   },
 });
+
+export default CreateBudget;
