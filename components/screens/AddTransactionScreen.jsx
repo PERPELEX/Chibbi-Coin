@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import { View, StyleSheet, Dimensions, Text, Animated } from "react-native";
 import { TabView, SceneMap } from "react-native-tab-view";
 import { useFocusEffect } from "@react-navigation/native";
@@ -9,22 +9,37 @@ import Category from "../expense/add/TransactionCategory";
 import AmountInput from "../expense/add/AmountInput";
 import NumberPad from "../expense/add/NumberPad";
 import TransactionDetails from "../expense/add/TransactionDetails";
+import { DataContext } from "../contexts/DataContext";
 
 const AddTransactionScreen = ({ navigation }) => {
+  const { data, addTransaction } = useContext(DataContext);
   const [amount, setAmount] = useState("");
   const [notes, setNotes] = useState("");
   const [category, setCategory] = useState("expense");
   const [subCategory, setSubCategory] = useState("Food and Drinks");
-  const [currency, setCurrency] = useState("PKR");
+  const [currency, setCurrency] = useState(data.user.currency);
   const [date, setDate] = useState(new Date());
-  const [index, setIndex] = useState(0);
-  const [alertVisible, setAlertVisible] = useState(false);
-  const fadeAnim = useState(new Animated.Value(0))[0];
-
   const [isRecurring, setIsRecurring] = useState(false);
   const [frequency, setFrequency] = useState("daily");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+
+  const [index, setIndex] = useState(0);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const fadeAnim = useState(new Animated.Value(0))[0];
+
+  const resetStates = () => {
+    setAmount("");
+    setNotes("");
+    setCategory("expense");
+    setSubCategory("Food and Drinks");
+    setCurrency(data.user.currency);
+    setDate(new Date());
+    setIsRecurring(false);
+    setFrequency("daily");
+    setStartDate(new Date());
+    setEndDate(new Date());
+  };
 
   const handleKeyPress = (value) => {
     if (value === "x") {
@@ -51,27 +66,29 @@ const AddTransactionScreen = ({ navigation }) => {
         }, 1000);
       });
     } else {
-      handleKeyPress("");
+      addTransaction({
+        name: subCategory,
+        amount: parseFloat(amount),
+        type: category === "expense" ? "deducted" : "added",
+        date,
+        notes,
+        subCategory,
+        isRecurring,
+        frequency,
+        startDate,
+        endDate,
+      });
+      resetStates();
+      navigation.goBack();
     }
   };
 
   useFocusEffect(
     useCallback(() => {
-      // Reset all states when the screen comes into focus
-      return () => {
-        setAmount("");
-        setNotes("");
-        setCategory("expense");
-        setSubCategory("");
-        setCurrency("PKR");
-        setDate(new Date());
-        setIndex(0);
-        setIsRecurring(false);
-        setFrequency("daily");
-        setStartDate(new Date());
-        setEndDate(new Date());
-      };
-    }, [])
+      // Reset all states and set index to 0 when the screen comes into focus
+      resetStates();
+      setIndex(0);
+    }, [data.user.currency])
   );
 
   const FirstRoute = () => (

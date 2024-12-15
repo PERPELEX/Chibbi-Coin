@@ -78,6 +78,54 @@ export const DataProvider = ({ children }) => {
     ],
   });
 
+  const addTransaction = (newTransaction) => {
+    const transactionDate = new Date(newTransaction.date);
+    const currentDate = new Date();
+
+    if (transactionDate > currentDate) {
+      // Add to upcomingTransactions if the transaction date is in the future
+      setData((prevData) => ({
+        ...prevData,
+        upcomingTransactions: [
+          ...prevData.upcomingTransactions,
+          {
+            id: Date.now(), // Generate unique ID
+            name: newTransaction.name,
+            amount: newTransaction.amount,
+            date: newTransaction.date,
+            notes: newTransaction.notes,
+            subCategory: newTransaction.subCategory,
+            isRecurring: newTransaction.isRecurring,
+            frequency: newTransaction.frequency,
+            startDate: newTransaction.startDate,
+            endDate: newTransaction.endDate,
+          },
+        ],
+      }));
+    } else {
+      // Add to recentTransactions if the transaction date is in the past or today
+      setData((prevData) => ({
+        ...prevData,
+        recentTransactions: [
+          ...prevData.recentTransactions,
+          {
+            id: Date.now(), // Generate unique ID
+            name: newTransaction.name,
+            amount: newTransaction.amount,
+            type: newTransaction.type,
+            date: newTransaction.date,
+            notes: newTransaction.notes,
+            subCategory: newTransaction.subCategory,
+            isRecurring: newTransaction.isRecurring,
+            frequency: newTransaction.frequency,
+            startDate: newTransaction.startDate,
+            endDate: newTransaction.endDate,
+          },
+        ],
+      }));
+    }
+  };
+
   const addBudget = (newBudget) => {
     setData((prevData) => ({
       ...prevData,
@@ -158,6 +206,7 @@ export const DataProvider = ({ children }) => {
         updateGoal,
         updateUserImage,
         updateUserField,
+        addTransaction,
       }}
     >
       {children}

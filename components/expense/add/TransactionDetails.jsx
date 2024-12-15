@@ -106,6 +106,8 @@ const TransactionDetails = ({
         <Switch
           value={isRecurring}
           onValueChange={(value) => setIsRecurring(value)}
+          trackColor={{ false: "#767577", true: "#76dbbc" }}
+          thumbColor={isRecurring ? "#16B773" : "#f4f3f4"}
         />
       </View>
 
@@ -214,10 +216,11 @@ const styles = StyleSheet.create({
   dateRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    gap: 10,
   },
   dateColumn: {
     flex: 1,
-    marginRight: 10,
+    // marginRight: 10,
   },
 });
 
