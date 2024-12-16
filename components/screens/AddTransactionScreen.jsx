@@ -5,8 +5,9 @@ import { useFocusEffect } from "@react-navigation/native";
 
 import DefaultLayout from "../layout/DefaultLayout";
 import Header from "../expense/add/TransactionHeader";
-import Category from "../expense/add/TransactionCategory";
+import Type from "../expense/add/TransactionType";
 import AmountInput from "../expense/add/AmountInput";
+import Category from "../expense/add/CategorySelector";
 import NumberPad from "../expense/add/NumberPad";
 import TransactionDetails from "../expense/add/TransactionDetails";
 import { DataContext } from "../contexts/DataContext";
@@ -15,8 +16,8 @@ const AddTransactionScreen = ({ navigation }) => {
   const { data, addTransaction } = useContext(DataContext);
   const [amount, setAmount] = useState("");
   const [notes, setNotes] = useState("");
-  const [category, setCategory] = useState("expense");
-  const [subCategory, setSubCategory] = useState("Food and Drinks");
+  const [type, setType] = useState("expense");
+  const [category, setCategory] = useState("Food and Drinks");
   const [currency, setCurrency] = useState(data.user.currency);
   const [date, setDate] = useState(new Date());
   const [isRecurring, setIsRecurring] = useState(false);
@@ -31,8 +32,8 @@ const AddTransactionScreen = ({ navigation }) => {
   const resetStates = () => {
     setAmount("");
     setNotes("");
-    setCategory("expense");
-    setSubCategory("Food and Drinks");
+    setType("expense");
+    setCategory("Food and Drinks");
     setCurrency(data.user.currency);
     setDate(new Date());
     setIsRecurring(false);
@@ -67,13 +68,13 @@ const AddTransactionScreen = ({ navigation }) => {
       });
     } else {
       addTransaction({
-        name: subCategory,
+        name: category,
         amount: parseFloat(amount),
         currency,
-        type: category === "expense" ? "deducted" : "added",
+        type: type === "expense" ? "deducted" : "added",
         date,
         notes,
-        subCategory,
+        category,
         isRecurring,
         frequency,
         startDate,
@@ -100,20 +101,26 @@ const AddTransactionScreen = ({ navigation }) => {
         handleKeyPress={handleCheckPress}
         close={true}
       />
-      <Category category={category} setCategory={setCategory} />
-      <AmountInput
-        amount={amount}
-        setAmount={setAmount}
-        currency={currency}
-        category={category}
-        setIndex={setIndex} // Pass setIndex to AmountInput
-      />
-      <NumberPad handleKeyPress={handleKeyPress} />
-      {alertVisible && (
-        <Animated.View style={[styles.alert, { opacity: fadeAnim }]}>
-          <Text style={styles.alertText}>Please fill in the form</Text>
-        </Animated.View>
-      )}
+      <Type type={type} setType={setType} />
+      <View style={styles.temp}>
+        <AmountInput
+          amount={amount}
+          setAmount={setAmount}
+          currency={currency}
+          setCurrency={setCurrency}
+          type={type}
+          setIndex={setIndex} // Pass setIndex to AmountInput
+        />
+        <View>
+          <Category category={category} setCategory={setCategory} />
+          <NumberPad handleKeyPress={handleKeyPress} />
+          {alertVisible && (
+            <Animated.View style={[styles.alert, { opacity: fadeAnim }]}>
+              <Text style={styles.alertText}>Please fill in the form</Text>
+            </Animated.View>
+          )}
+        </View>
+      </View>
     </View>
   );
 
@@ -127,8 +134,8 @@ const AddTransactionScreen = ({ navigation }) => {
       <TransactionDetails
         notes={notes}
         setNotes={setNotes}
-        subCategory={subCategory}
-        setSubCategory={setSubCategory}
+        category={category}
+        setCategory={setCategory}
         date={date}
         setDate={setDate}
         isRecurring={isRecurring}
@@ -172,13 +179,12 @@ const AddTransactionScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000",
-  },
   scene: {
     flex: 1,
-    backgroundColor: "#000",
+  },
+  temp: {
+    flex: 1,
+    justifyContent: "space-between",
   },
   alert: {
     position: "absolute",

@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 1,
     borderLeftWidth: 5,
-    borderLeftColor: "#FF6B6B", // Red for upcoming transactions
+    borderLeftColor: "#fa5252", // Red for upcoming transactions
   },
   transactionName: {
     fontSize: 14,

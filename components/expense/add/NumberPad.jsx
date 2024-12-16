@@ -1,16 +1,13 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  FlatList,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const NumberPad = ({ handleKeyPress }) => {
+  const keys = ["7", "8", "9", "4", "5", "6", "1", "2", "3", ".", "0", "x"];
+
   const renderKey = (item) => (
     <TouchableOpacity
+      key={item}
       style={[
         styles.key,
         item === "x" && styles.deleteKey,
@@ -40,21 +37,21 @@ const NumberPad = ({ handleKeyPress }) => {
 
   return (
     <View style={styles.numberPad}>
-      <FlatList
-        data={["7", "8", "9", "4", "5", "6", "1", "2", "3", ".", "0", "x"]}
-        renderItem={({ item }) => renderKey(item)}
-        numColumns={3}
-        keyExtractor={(item, index) => index.toString()}
-      />
+      <View style={styles.row}>{keys.slice(0, 3).map(renderKey)}</View>
+      <View style={styles.row}>{keys.slice(3, 6).map(renderKey)}</View>
+      <View style={styles.row}>{keys.slice(6, 9).map(renderKey)}</View>
+      <View style={styles.row}>{keys.slice(9, 12).map(renderKey)}</View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   numberPad: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: "#000", // Green background as per the theme
-    height: "auto",
+  },
+  row: {
+    flexDirection: "row",
   },
   key: {
     flex: 1,
