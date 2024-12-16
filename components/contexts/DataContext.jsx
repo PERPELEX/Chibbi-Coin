@@ -55,13 +55,37 @@ export const DataProvider = ({ children }) => {
     income: 3000.0,
     expense: 1800.0,
     recentTransactions: [
-      { id: 1, name: "Grocery", amount: 50.75, type: "deducted" },
-      { id: 2, name: "Salary", amount: 1200.0, type: "added" },
-      { id: 3, name: "Internet Bill", amount: 60.0, type: "deducted" },
+      {
+        id: 1,
+        name: "Grocery",
+        amount: 50.75,
+        type: "deducted",
+        currency: "USD",
+      },
+      { id: 2, name: "Salary", amount: 1200.0, type: "added", currency: "USD" },
+      {
+        id: 3,
+        name: "Internet Bill",
+        amount: 60.0,
+        type: "deducted",
+        currency: "PKR",
+      },
     ],
     upcomingTransactions: [
-      { id: 1, name: "Rent", amount: 800.0, date: "2024-12-01" },
-      { id: 2, name: "Car Insurance", amount: 200.0, date: "2024-12-05" },
+      {
+        id: 1,
+        name: "Rent",
+        amount: 800.0,
+        date: "2024-12-01",
+        currency: "USD",
+      },
+      {
+        id: 2,
+        name: "Car Insurance",
+        amount: 200.0,
+        date: "2024-12-05",
+        currency: "PKR",
+      },
     ],
     notifications: [
       { id: 1, title: "Welcome", details: "Welcome to Chibi-Coin!" },
@@ -92,6 +116,7 @@ export const DataProvider = ({ children }) => {
             id: Date.now(), // Generate unique ID
             name: newTransaction.name,
             amount: newTransaction.amount,
+            currency: newTransaction.currency,
             date: newTransaction.date,
             notes: newTransaction.notes,
             subCategory: newTransaction.subCategory,
@@ -112,6 +137,7 @@ export const DataProvider = ({ children }) => {
             id: Date.now(), // Generate unique ID
             name: newTransaction.name,
             amount: newTransaction.amount,
+            currency: newTransaction.currency,
             type: newTransaction.type,
             date: newTransaction.date,
             notes: newTransaction.notes,

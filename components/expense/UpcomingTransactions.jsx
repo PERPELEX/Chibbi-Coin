@@ -1,4 +1,3 @@
-// src/components/UpcomingTransactions.js
 import React, { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { DataContext } from "../contexts/DataContext";
@@ -7,18 +6,35 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 export default function UpcomingTransactions() {
   const { data } = useContext(DataContext);
 
+  const getCurrencySymbol = (currency) => {
+    switch (currency) {
+      case "PKR":
+        return "₨";
+      case "USD":
+      default:
+        return "$";
+    }
+  };
+
   return (
     <View style={styles.section}>
       {data.upcomingTransactions.map((transaction) => (
         <View key={transaction.id} style={styles.transaction}>
           <View style={styles.transactionDetails}>
             <Text style={styles.transactionName}>{transaction.name}</Text>
-            {/* <Icon name="calendar" size={20} color="#666" />
-            <Text style={styles.transactionDate}>{transaction.date}</Text> */}
+            <View style={styles.dateContainer}>
+              <Icon name="calendar" size={16} color="#666" />
+              <Text style={styles.transactionDate}>
+                {new Date(transaction.date).toLocaleDateString()}
+              </Text>
+            </View>
           </View>
-          <Text style={styles.transactionAmount}>
-            ${transaction.amount.toFixed(2)}
-          </Text>
+          <View style={styles.amountAndDate}>
+            <Text style={styles.transactionAmount}>
+              {getCurrencySymbol(transaction.currency)}{" "}
+              {transaction.amount.toFixed(2)}
+            </Text>
+          </View>
         </View>
       ))}
     </View>
@@ -58,9 +74,18 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   transactionDetails: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  amountAndDate: {
+    flexDirection: "column",
+    alignItems: "flex-end",
+  },
+  dateContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
+    marginTop: 4, // Add some space between the name and the date
   },
   transactionAmount: {
     fontSize: 14,

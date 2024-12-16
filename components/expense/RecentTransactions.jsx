@@ -1,4 +1,3 @@
-// src/components/RecentTransactions.js
 import React, { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { DataContext } from "../contexts/DataContext";
@@ -6,6 +5,16 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function RecentTransactions() {
   const { data } = useContext(DataContext);
+
+  const getCurrencySymbol = (currency) => {
+    switch (currency) {
+      case "PKR":
+        return "₨";
+      case "USD":
+      default:
+        return "$";
+    }
+  };
 
   return (
     <View style={styles.section}>
@@ -22,7 +31,7 @@ export default function RecentTransactions() {
           <Text style={styles.transactionName}>{tx.name}</Text>
           <View style={styles.transactionDetails}>
             <Text style={styles.transactionAmount}>
-              ${tx.amount.toFixed(2)}
+              {getCurrencySymbol(tx.currency)} {tx.amount.toFixed(2)}
             </Text>
             {tx.type === "added" ? (
               <Icon name="arrow-up" size={20} color="#2BCB79" />

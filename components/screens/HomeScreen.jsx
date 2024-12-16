@@ -1,7 +1,13 @@
-// src/screens/HomeScreen.js
-import React from "react";
-import { StyleSheet, View, Dimensions, Text } from "react-native";
-import { TabView, SceneMap, TabBar } from "react-native-tab-view";
+import React, { useRef, useEffect } from "react";
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  Animated,
+} from "react-native";
+import { TabView, SceneMap } from "react-native-tab-view";
 import Dashboard from "../expense/Dashboard";
 import RecentTransactions from "../expense/RecentTransactions";
 import UpcomingTransactions from "../expense/UpcomingTransactions";
@@ -21,26 +27,52 @@ export default function HomeScreen({ navigation }) {
     upcoming: UpcomingTransactions,
   });
 
+  const translateX = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(translateX, {
+      toValue: index * ((Dimensions.get("window").width - 32) / 2),
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [index]);
+
+  const CustomTabBar = ({ navigationState, setIndex }) => {
+    return (
+      <View style={styles.customTabBar}>
+        <Animated.View
+          style={[
+            styles.switchIndicator,
+            {
+              transform: [{ translateX }],
+            },
+          ]}
+        />
+        {navigationState.routes.map((route, i) => (
+          <TouchableOpacity
+            key={route.key}
+            style={styles.tabItem}
+            onPress={() => setIndex(i)}
+          >
+            <Text style={styles.tabLabel}>{route.title}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+
   return (
     <DefaultLayout>
       <Dashboard />
       <View style={styles.accounts}>
         <Text style={styles.TitleText}>Accounts</Text>
+        <CustomTabBar navigationState={{ index, routes }} setIndex={setIndex} />
         <TabView
           navigationState={{ index, routes }}
           renderScene={renderScene}
           onIndexChange={setIndex}
           initialLayout={initialLayout}
-          renderTabBar={(props) => (
-            <TabBar
-              {...props}
-              style={styles.tabBar}
-              indicatorStyle={styles.indicator}
-              labelStyle={styles.tabLabel} // Apply label style
-              activeColor="#fff" // Color when focused
-              inactiveColor="#eee" // Default color
-            />
-          )}
+          renderTabBar={() => null} // Hide the default tab bar
         />
       </View>
     </DefaultLayout>
@@ -62,7 +94,9 @@ const styles = StyleSheet.create({
     color: "#000",
     marginVertical: 10,
   },
-  tabBar: {
+  customTabBar: {
+    flexDirection: "row",
+    justifyContent: "space-around",
     backgroundColor: "#2BCB79",
     borderRadius: 20,
     marginBottom: 10,
@@ -71,12 +105,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 1,
     elevation: 2,
+    position: "relative",
   },
-  indicator: {
-    backgroundColor: "transparent",
+  switchIndicator: {
+    position: "absolute",
+    width: "50%",
+    height: "100%",
+    backgroundColor: "#1E9E5F",
+    borderRadius: 20,
+  },
+  tabItem: {
+    flex: 1,
+    paddingVertical: 10,
+    alignItems: "center",
+    borderRadius: 20,
   },
   tabLabel: {
-    fontSize: 16, // Increase font size
+    fontSize: 16,
     fontWeight: "bold",
+    color: "#fff", // Always white
   },
 });

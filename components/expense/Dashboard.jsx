@@ -1,4 +1,3 @@
-// src/components/Dashboard.jsx
 import React, { useContext } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -7,18 +6,34 @@ import { DataContext } from "../contexts/DataContext";
 export default function Dashboard() {
   const { data } = useContext(DataContext);
 
+  const getCurrencySymbol = (currency) => {
+    switch (currency) {
+      case "PKR":
+        return "₨";
+      case "USD":
+      default:
+        return "$";
+    }
+  };
+
+  const currencySymbol = getCurrencySymbol(data.user.currency);
+
   return (
     <View style={styles.container}>
       <View style={styles.balanceContainer}>
         <Text style={styles.title}>Your Balance</Text>
-        <Text style={styles.balance}>${data.balance.toFixed(2)}</Text>
+        <Text style={styles.balance}>
+          {currencySymbol} {data.balance.toFixed(2)}
+        </Text>
       </View>
       <View style={styles.row}>
         <View style={styles.metric}>
           <View style={styles.metricContent}>
             <View>
               <Text style={styles.metricLabel}>Income</Text>
-              <Text style={styles.metricValue}>${data.income.toFixed(2)}</Text>
+              <Text style={styles.metricValue}>
+                {currencySymbol} {data.income.toFixed(2)}
+              </Text>
             </View>
             <Icon
               name="arrow-up"
@@ -32,7 +47,9 @@ export default function Dashboard() {
           <View style={styles.metricContent}>
             <View>
               <Text style={styles.metricLabel}>Expense</Text>
-              <Text style={styles.metricValue}>${data.expense.toFixed(2)}</Text>
+              <Text style={styles.metricValue}>
+                {currencySymbol} {data.expense.toFixed(2)}
+              </Text>
             </View>
             <Icon
               name="arrow-down"

@@ -69,6 +69,7 @@ const AddTransactionScreen = ({ navigation }) => {
       addTransaction({
         name: subCategory,
         amount: parseFloat(amount),
+        currency,
         type: category === "expense" ? "deducted" : "added",
         date,
         notes,
