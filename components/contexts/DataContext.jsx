@@ -100,6 +100,13 @@ export const DataProvider = ({ children }) => {
         details: "Congratulations! You have achieved your Bike goal.",
       },
     ],
+    balanceHistory: [
+      { date: "2023-01-01", balance: 1000 },
+      { date: "2023-02-01", balance: 1200 },
+      { date: "2023-03-01", balance: 1100 },
+      { date: "2023-04-01", balance: 1300 },
+      { date: "2023-05-01", balance: 1250 },
+    ],
   });
 
   const addTransaction = (newTransaction) => {

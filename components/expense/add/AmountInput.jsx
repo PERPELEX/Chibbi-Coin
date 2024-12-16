@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     height: 90,
     backgroundColor: "#16B773",
     position: "absolute",
-    top: 55,
+    top: 85,
     right: 0,
     borderTopLeftRadius: 40,
     borderBottomLeftRadius: 40,
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   symbol: {
     marginRight: 10,
     position: "relative",
-    top: -35,
+    top: -0,
   },
   currencyButton: {
     padding: 10,
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginLeft: 10,
     position: "relative",
-    top: -35,
+    top: -0,
   },
   currencyText: {
     fontSize: 18,
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
     overflow: "scroll",
     position: "relative",
-    top: -35,
+    top: -0,
   },
   modalContainer: {
     flex: 1,

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { DataContext } from "../contexts/DataContext";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -17,31 +17,41 @@ export default function UpcomingTransactions() {
   };
 
   return (
-    <View style={styles.section}>
-      {data.upcomingTransactions.map((transaction) => (
-        <View key={transaction.id} style={styles.transaction}>
-          <View style={styles.transactionDetails}>
-            <Text style={styles.transactionName}>{transaction.name}</Text>
-            <View style={styles.dateContainer}>
-              <Icon name="calendar" size={16} color="#666" />
-              <Text style={styles.transactionDate}>
-                {new Date(transaction.date).toLocaleDateString()}
+    <ScrollView
+      style={styles.scrollView}
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}
+    >
+      <View style={styles.section}>
+        {data.upcomingTransactions.map((transaction) => (
+          <View key={transaction.id} style={styles.transaction}>
+            <View style={styles.transactionDetails}>
+              <Text style={styles.transactionName}>{transaction.name}</Text>
+              <View style={styles.dateContainer}>
+                <Icon name="calendar" size={16} color="#666" />
+                <Text style={styles.transactionDate}>
+                  {new Date(transaction.date).toLocaleDateString()}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.amountAndDate}>
+              <Text style={styles.transactionAmount}>
+                {getCurrencySymbol(transaction.currency)}{" "}
+                {transaction.amount.toFixed(2)}
               </Text>
             </View>
           </View>
-          <View style={styles.amountAndDate}>
-            <Text style={styles.transactionAmount}>
-              {getCurrencySymbol(transaction.currency)}{" "}
-              {transaction.amount.toFixed(2)}
-            </Text>
-          </View>
-        </View>
-      ))}
-    </View>
+        ))}
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+    marginBottom: 50,
+  },
   section: {
     flex: 1,
     marginBottom: 16,

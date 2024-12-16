@@ -21,6 +21,7 @@ import GoalDetail from "./components/screens/GoalDetail";
 import CreateBudget from "./components/create/CreateBudget";
 import CreateGoal from "./components/create/CreateGoal";
 import User from "./components/screens/User";
+import BalanceScreen from "./components/screens/BalanceScreen";
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();

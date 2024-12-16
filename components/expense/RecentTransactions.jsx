@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { DataContext } from "../contexts/DataContext";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -17,35 +17,45 @@ export default function RecentTransactions() {
   };
 
   return (
-    <View style={styles.section}>
-      {data.recentTransactions.map((tx) => (
-        <View
-          key={tx.id}
-          style={[
-            styles.transaction,
-            tx.type === "added"
-              ? styles.transactionAdded
-              : styles.transactionDeducted,
-          ]}
-        >
-          <Text style={styles.transactionName}>{tx.name}</Text>
-          <View style={styles.transactionDetails}>
-            <Text style={styles.transactionAmount}>
-              {getCurrencySymbol(tx.currency)} {tx.amount.toFixed(2)}
-            </Text>
-            {tx.type === "added" ? (
-              <Icon name="arrow-up" size={20} color="#2BCB79" />
-            ) : (
-              <Icon name="arrow-down" size={20} color="#fa5252" />
-            )}
+    <ScrollView
+      style={styles.scrollView}
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}
+    >
+      <View style={styles.section}>
+        {data.recentTransactions.map((tx) => (
+          <View
+            key={tx.id}
+            style={[
+              styles.transaction,
+              tx.type === "added"
+                ? styles.transactionAdded
+                : styles.transactionDeducted,
+            ]}
+          >
+            <Text style={styles.transactionName}>{tx.name}</Text>
+            <View style={styles.transactionDetails}>
+              <Text style={styles.transactionAmount}>
+                {getCurrencySymbol(tx.currency)} {tx.amount.toFixed(2)}
+              </Text>
+              {tx.type === "added" ? (
+                <Icon name="arrow-up" size={20} color="#2BCB79" />
+              ) : (
+                <Icon name="arrow-down" size={20} color="#fa5252" />
+              )}
+            </View>
           </View>
-        </View>
-      ))}
-    </View>
+        ))}
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+    marginBottom: 50,
+  },
   section: {
     flex: 1,
     marginBottom: 16,

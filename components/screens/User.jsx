@@ -9,12 +9,12 @@ import {
   ActivityIndicator,
   TextInput,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker"; // Use expo-image-picker
-import { Picker } from "@react-native-picker/picker"; // Import Picker
+import * as ImagePicker from "expo-image-picker";
+import { Picker } from "@react-native-picker/picker";
 import { DataContext } from "../contexts/DataContext";
 import DefaultLayout from "../layout/DefaultLayout";
 import Backbar from "../layout/Backbar";
-import * as Updates from "expo-updates"; // Import expo-updates
+import * as Updates from "expo-updates";
 
 const User = ({ navigation }) => {
   const { data, updateUserImage, updateUserField } = useContext(DataContext);
@@ -26,7 +26,6 @@ const User = ({ navigation }) => {
 
   const pickImageAndUpload = async () => {
     try {
-      // Request media library permissions
       const permissionResult =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permissionResult.granted) {
@@ -37,7 +36,6 @@ const User = ({ navigation }) => {
         return;
       }
 
-      // Launch the image picker
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
@@ -50,8 +48,6 @@ const User = ({ navigation }) => {
       }
 
       const imageUri = result.assets[0].uri;
-
-      // Update user data with the selected image URI
       updateUserImage(imageUri);
 
       setUploading(false);
@@ -64,20 +60,14 @@ const User = ({ navigation }) => {
   };
 
   const handleLogout = async () => {
-    // Perform any necessary cleanup or state reset here
-    // For example, you might want to clear user data from context or storage
-
-    // Restart the app
     await Updates.reloadAsync();
   };
 
   return (
     <DefaultLayout>
       <View style={styles.container}>
-        {/* Header */}
         <Backbar name="Profile" avatar={true} imageUri={data.user.imageUri} />
         <View style={styles.subContainer}>
-          {/* Profile Image */}
           <View style={styles.profileContainer}>
             <TouchableOpacity
               onPress={pickImageAndUpload}
@@ -96,7 +86,6 @@ const User = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
-          {/* Profile Details */}
           <View style={styles.profileDetailsContainer}>
             <Text style={styles.label}>Name</Text>
             <TextInput
@@ -112,7 +101,6 @@ const User = ({ navigation }) => {
               onChangeText={(text) => updateUserField("email", text)}
             />
 
-            {/* Currency Selector */}
             <Text style={styles.label}>Currency</Text>
             <View style={styles.pickerContainer}>
               <Picker
@@ -121,17 +109,12 @@ const User = ({ navigation }) => {
                 style={styles.picker}
                 itemStyle={styles.pickerItem}
               >
-                <Picker.Item
-                  label={data.user.currency}
-                  value={data.user.currency}
-                />
-                <Picker.Item label="USD" value="$" />
-                <Picker.Item label="PKR" value="Rs" />
+                <Picker.Item label="USD" value="USD" />
+                <Picker.Item label="PKR" value="PKR" />
               </Picker>
             </View>
           </View>
 
-          {/* Logout Button */}
           <View style={styles.button}>
             <TouchableOpacity
               onPress={handleLogout}
@@ -187,7 +170,7 @@ const styles = StyleSheet.create({
     color: "#000",
     marginBottom: 5,
     fontSize: 16,
-    fontWeight: 500,
+    fontWeight: "500",
   },
   profileDetailsText: {
     fontSize: 16,
@@ -208,7 +191,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   pickerItem: {
-    color: "#000", // Set text color to black
+    color: "#000",
   },
   button: {
     alignItems: "center",
