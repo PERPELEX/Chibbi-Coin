@@ -54,7 +54,14 @@ export default function HomeScreen({ navigation }) {
             style={styles.tabItem}
             onPress={() => setIndex(i)}
           >
-            <Text style={styles.tabLabel}>{route.title}</Text>
+            <Text
+              style={[
+                styles.tabLabel,
+                index === i ? styles.activeTabLabel : styles.inactiveTabLabel,
+              ]}
+            >
+              {route.title}
+            </Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -123,6 +130,11 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#fff", // Always white
+  },
+  activeTabLabel: {
+    color: "#fff", // White color for active tab
+  },
+  inactiveTabLabel: {
+    color: "#eee", // Grey color for inactive tab
   },
 });

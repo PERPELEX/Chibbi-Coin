@@ -36,7 +36,7 @@ export default function RecentTransactions() {
             {tx.type === "added" ? (
               <Icon name="arrow-up" size={20} color="#2BCB79" />
             ) : (
-              <Icon name="arrow-down" size={20} color="#FF6B6B" />
+              <Icon name="arrow-down" size={20} color="#fa5252" />
             )}
           </View>
         </View>
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     borderLeftColor: "#2BCB79", // Green for added transactions
   },
   transactionDeducted: {
-    borderLeftColor: "#FF6B6B", // Red for deducted transactions
+    borderLeftColor: "#fa5252", // Red for deducted transactions
   },
   transactionName: {
     fontSize: 14,

@@ -1,27 +1,37 @@
 // src/screens/DetailsScreen.js
 import React from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
-import HomeLayout from "../layout/HomeLayout";
+import DefaultLayout from "../layout/DefaultLayout";
+import Titlebar from "../layout/Titlebar";
+import Footer from "../layout/Footer";
 import BudgetBox from "../budget/BudgetBox";
 import GoalBox from "../goals/GoalBox";
 
 export default function DetailsScreen() {
   return (
-    <HomeLayout>
-      <ScrollView
-        contentContainerStyle={styles.container} // Move layout styles here
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.subContainer}>
-          <BudgetBox />
-          <GoalBox />
-        </View>
-      </ScrollView>
-    </HomeLayout>
+    <DefaultLayout>
+      <Titlebar title="Details" />
+      <View style={styles.color}>
+        <ScrollView
+          contentContainerStyle={styles.container} // Move layout styles here
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.subContainer}>
+            <BudgetBox />
+            <GoalBox />
+          </View>
+        </ScrollView>
+      </View>
+      <Footer />
+    </DefaultLayout>
   );
 }
 
 const styles = StyleSheet.create({
+  color: {
+    flex: 1,
+    backgroundColor: "#2BCB79",
+  },
   container: {
     flex: 1,
     alignItems: "start", // Now inside contentContainerStyle
@@ -34,5 +44,6 @@ const styles = StyleSheet.create({
   },
   subContainer: {
     gap: 20,
+    backgroundColor: "2BCB79",
   },
 });

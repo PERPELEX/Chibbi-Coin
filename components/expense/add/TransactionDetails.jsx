@@ -15,8 +15,8 @@ import Icon from "react-native-vector-icons/FontAwesome";
 const TransactionDetails = ({
   notes,
   setNotes,
-  subCategory,
-  setSubCategory,
+  category,
+  setCategory,
   date,
   setDate,
   isRecurring,
@@ -81,8 +81,8 @@ const TransactionDetails = ({
       <Text style={styles.label}>Category</Text>
       <View style={styles.pickerContainer}>
         <Picker
-          selectedValue={subCategory}
-          onValueChange={(itemValue) => setSubCategory(itemValue)}
+          selectedValue={category}
+          onValueChange={(itemValue) => setCategory(itemValue)}
           style={styles.picker}
           itemStyle={styles.pickerItem}
         >
