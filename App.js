@@ -12,7 +12,7 @@ import AddTransactionScreen from "./components/screens/AddTransactionScreen";
 import Login from "./components/authentication/Login";
 import SignUp from "./components/authentication/SignUp";
 import ForgotPassword from "./components/authentication/ForgotPassword";
-import ConfirmPassword from "./components/authentication/ConfirmPassword";
+// import ConfirmPassword from "./components/authentication/ConfirmPassword";
 import FrontPage from "./components/authentication/FrontPage";
 import BudgetBox from "./components/budget/BudgetBox";
 import GoalBox from "./components/goals/GoalBox";
@@ -54,7 +54,7 @@ function LoginTabs() {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Confirm"
         component={ConfirmPassword}
         options={{
@@ -63,7 +63,7 @@ function LoginTabs() {
             <Icon name="login" color={color} size={26} />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Forgot"
         component={ForgotPassword}
@@ -112,7 +112,7 @@ export default function App() {
     <PaperProvider>
       <DataProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Main">
+          <Stack.Navigator initialRouteName="Login">
             <Stack.Screen
               name="FrontPage"
               component={FrontPage}

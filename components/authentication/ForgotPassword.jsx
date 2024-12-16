@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,36 +9,50 @@ import {
   Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { DataContext } from "../contexts/DataContext";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import app from "../utils/firebaseConfig";
+
+const auth = getAuth(app);
 
 const ForgotPassword = ({ navigation }) => {
-  const { data, setData } = useContext(DataContext);
   const [email, setEmail] = useState("");
-  const [verificationKey, setVerificationKey] = useState("");
-  const [generatedKey, setGeneratedKey] = useState(null); // Simulate key generation
-  const [keySent, setKeySent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSendKey = () => {
-    const user = data.user;
-
-    if (email === user.email) {
-      // Simulate key generation and sending
-      const key = Math.floor(1000 + Math.random() * 9000).toString(); // Generate a 4-digit code
-      setGeneratedKey(key);
-      setKeySent(true);
-      Alert.alert("Success", `Verification key sent to ${email}!`);
-    } else {
-      Alert.alert("Error", "Email not found.");
+  const handleForgotPassword = () => {
+    if (!email) {
+      Alert.alert("Error", "Please enter your email address.");
+      return;
     }
-  };
 
-  const handleVerifyKey = () => {
-    if (verificationKey === generatedKey) {
-      Alert.alert("Success", "Key verified! Proceed to reset password.");
-      navigation.navigate("Confirm"); // Navigate to ConfirmPassword screen
-    } else {
-      Alert.alert("Error", "Invalid verification key.");
-    }
+    setLoading(true);
+
+    // Check if email exists in Firebase and send reset link
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        setLoading(false);
+        Alert.alert(
+          "Success",
+          `A password reset email has been sent to ${email}. Please check your inbox and follow the instructions.`,
+          [
+            {
+              text: "OK",
+              onPress: () => navigation.navigate("Login"),
+            },
+          ]
+        );
+      })
+      .catch((error) => {
+        setLoading(false);
+
+        let errorMessage = "Something went wrong. Please try again.";
+        if (error.code === "auth/user-not-found") {
+          errorMessage = "No account found with this email address.";
+        } else if (error.code === "auth/invalid-email") {
+          errorMessage = "The email address is not valid.";
+        }
+
+        Alert.alert("Error", errorMessage);
+      });
   };
 
   return (
@@ -50,6 +64,11 @@ const ForgotPassword = ({ navigation }) => {
         />
       </View>
 
+      <Text style={styles.title}>Forgot Password?</Text>
+      <Text style={styles.subtitle}>
+        Enter your registered email address, and we will send you a link to reset your password.
+      </Text>
+
       <View style={styles.inputContainer}>
         <Icon name="email" size={20} color="green" style={styles.icon} />
         <TextInput
@@ -58,38 +77,34 @@ const ForgotPassword = ({ navigation }) => {
           placeholderTextColor="#888"
           value={email}
           onChangeText={setEmail}
+          keyboardType="email-address"
         />
       </View>
 
-      {keySent && (
-        <View style={styles.inputContainer}>
-          <Icon name="key" size={20} color="green" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Enter verification key"
-            placeholderTextColor="#888"
-            value={verificationKey}
-            onChangeText={setVerificationKey}
-          />
-        </View>
-      )}
+      <TouchableOpacity
+        style={[styles.button, loading && { opacity: 0.5 }]}
+        onPress={handleForgotPassword}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>
+          {loading ? "Sending..." : "Send Reset Link"}
+        </Text>
+        <Icon name="send" size={20} color="white" />
+      </TouchableOpacity>
 
-      <View style={styles.buttons}>
-        {keySent ? (
-          <TouchableOpacity style={styles.button} onPress={handleVerifyKey}>
-            <Text style={styles.buttonText}>Verify</Text>
-            <Icon name="verified" size={20} color="white" />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity style={styles.button} onPress={handleSendKey}>
-            <Text style={styles.buttonText}>Send Key</Text>
-            <Icon name="send" size={20} color="white" />
-          </TouchableOpacity>
-        )}
-      </View>
+      <Text style={styles.footerText}>
+        Remembered your password?{" "}
+        <Text
+          style={styles.loginText}
+          onPress={() => navigation.navigate("Login")}
+        >
+          Login
+        </Text>
+      </Text>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -101,36 +116,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 30,
   },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    paddingVertical: 10,
-    color: "#000",
-  },
   logoImg: {
     width: 100,
     height: 100,
     resizeMode: "contain",
   },
-  button: {
-    flexDirection: "row",
-    backgroundColor: "#34c759",
-    paddingVertical: 10,
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    flex: 0.4,
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#000",
+    marginBottom: 10,
+    textAlign: "center",
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-  buttons: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 20,
+  subtitle: {
+    fontSize: 14,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
   },
   inputContainer: {
     flexDirection: "row",
@@ -145,8 +147,40 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    paddingVertical: 10,
+    color: "#000",
+  },
   icon: {
     marginRight: 10,
   },
+  button: {
+    flexDirection: "row",
+    backgroundColor: "#34c759",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 5,
+  },
+  footerText: {
+    marginTop: 20,
+    fontSize: 14,
+    color: "#666",
+    textAlign: "center",
+  },
+  loginText: {
+    color: "#34c759",
+    fontWeight: "bold",
+  },
 });
+
 export default ForgotPassword;
