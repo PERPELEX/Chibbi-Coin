@@ -94,7 +94,7 @@ function MainTabs() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Details" component={DetailsScreen} />
       <Tab.Screen name="Notifications" component={Notification} />
-      <Tab.Screen name="User" component={User} />
+      <Tab.Screen name="User" component={SignUp} />
       <Tab.Screen name="AddTransaction" component={AddTransactionScreen} />
       <Tab.Screen name="BudgetBox" component={BudgetBox} />
       <Tab.Screen name="GoalBox" component={GoalBox} />
