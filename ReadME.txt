@@ -9,3 +9,4 @@ npm start
 #2BCB79
 #21CE99
 #02192B
+#fa5252

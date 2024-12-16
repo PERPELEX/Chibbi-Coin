@@ -92,7 +92,7 @@ export default function CreateGoal() {
     setDesiredDate(new Date());
     setErrors({ name: false, target: false, saved: false }); // Reset errors
 
-    navigation.goBack();
+    navigation.navigate("Details");
   };
 
   return (
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   readOnlyInput: {
-    backgroundColor: "#EAEAEA",
+    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },

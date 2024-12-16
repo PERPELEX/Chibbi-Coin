@@ -13,6 +13,7 @@ import { ProgressCircle } from "react-native-svg-charts";
 import { formatCurrency } from "../utils/currencyUtils";
 import DefaultLayout from "../layout/DefaultLayout";
 import Backbar from "../layout/Backbar";
+import { useNavigation } from "@react-navigation/native";
 
 const formatWithCommas = (value) => {
   const numericValue = value.replace(/[^\d]/g, "");
@@ -24,6 +25,7 @@ export default function GoalDetail({ route }) {
   const { data, updateGoal, deleteGoal } = useContext(DataContext); // Assuming deleteGoal is provided by the context
   const [currentGoal, setCurrentGoal] = useState(goal);
   const [amountToAdd, setAmountToAdd] = useState("");
+  const navigation = useNavigation();
 
   useEffect(() => {
     const updatedGoal = data.goals.find((g) => g.id === goal.id);
@@ -57,7 +59,8 @@ export default function GoalDetail({ route }) {
         {
           text: "OK",
           onPress: () => {
-            deleteGoal(goal.id); // Call the delete function
+            deleteGoal(goal.id);
+            navigation.navigate("Details");
           },
         },
       ],
@@ -164,17 +167,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 20,
     right: 20,
-    backgroundColor: "#f1f1f1",
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    backgroundColor: "#f9f9f9",
+    paddingVertical: 6,
+    paddingHorizontal: 10,
     alignItems: "flex-start",
     justifyContent: "center",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    borderRadius: 8,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.03,
+    shadowRadius: 3,
+    borderRadius: 4,
+    elevation: 1,
   },
   detailText: {
     fontSize: 14,

@@ -64,7 +64,7 @@ const CreateBudget = () => {
         endDate: duration === "one-time" ? endDate : null,
       };
       addBudget(newBudget);
-      navigation.goBack();
+      navigation.navigate("Details");
     } else {
       const firstErrorField = Object.keys(errors)[0];
       if (firstErrorField) {
@@ -119,53 +119,11 @@ const CreateBudget = () => {
             style={styles.picker}
             onValueChange={(itemValue) => setDuration(itemValue)}
           >
-            <Picker.Item label="Week" value="weekly" />
-            <Picker.Item label="Month" value="monthly" />
-            <Picker.Item label="Year" value="yearly" />
-            <Picker.Item label="One-Time" value="one-time" />
+            <Picker.Item label="Week" value="Week" />
+            <Picker.Item label="Month" value="Month" />
+            <Picker.Item label="Year" value="Year" />
+            <Picker.Item label="One-Time" value="One-Time" />
           </Picker>
-          {/* {duration === "one-time" && (
-            <>
-              <TouchableOpacity
-                style={styles.dateField}
-                onPress={() => setShowStartDatePicker(true)}
-              >
-                <Text style={styles.dateFieldText}>
-                  {startDate ? formatDate(startDate) : "Select Start Date"}
-                </Text>
-              </TouchableOpacity>
-              {showStartDatePicker && (
-                <DateTimePicker
-                  value={startDate}
-                  mode="date"
-                  display="spinner"
-                  onChange={(event, date) => {
-                    setShowStartDatePicker(false);
-                    if (date) setStartDate(date);
-                  }}
-                />
-              )}
-              <TouchableOpacity
-                style={styles.dateField}
-                onPress={() => setShowEndDatePicker(true)}
-              >
-                <Text style={styles.dateFieldText}>
-                  {endDate ? formatDate(endDate) : "Select End Date"}
-                </Text>
-              </TouchableOpacity>
-              {showEndDatePicker && (
-                <DateTimePicker
-                  value={endDate}
-                  mode="date"
-                  display="spinner"
-                  onChange={(event, date) => {
-                    setShowEndDatePicker(false);
-                    if (date) setEndDate(date);
-                  }}
-                />
-              )}
-            </>
-          )} */}
           {/* Inside the JSX of the CreateBudget component */}
           {duration === "one-time" && (
             <>

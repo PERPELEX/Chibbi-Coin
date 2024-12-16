@@ -1,14 +1,26 @@
 import React, { useContext } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import { DataContext } from "../contexts/DataContext"; // Import the context
-import { formatDate } from "../utils/dateUtils"; // Import the utility function
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
+  Dimensions,
+} from "react-native";
+import { DataContext } from "../contexts/DataContext";
+import { formatDate } from "../utils/dateUtils";
 import { formatCurrency } from "../utils/currencyUtils";
 import DefaultLayout from "../layout/DefaultLayout";
 import Backbar from "../layout/Backbar";
+import { useNavigation } from "@react-navigation/native";
+
+const { width } = Dimensions.get("window");
 
 export default function BudgetDetail({ route }) {
   const { budgetItem } = route.params;
-  const { deleteBudget } = useContext(DataContext); // Get deleteBudget from context
+  const { deleteBudget } = useContext(DataContext);
+  const navigation = useNavigation();
 
   const remainingAmount = budgetItem.amount - budgetItem.spent;
   const spentPercentage = (budgetItem.spent / budgetItem.amount) * 100;
@@ -24,7 +36,10 @@ export default function BudgetDetail({ route }) {
         },
         {
           text: "OK",
-          onPress: () => deleteBudget(budgetItem.id), // Call deleteBudget on confirmation
+          onPress: () => {
+            deleteBudget(budgetItem.id);
+            navigation.navigate("Details");
+          },
         },
       ],
       { cancelable: false }
@@ -34,26 +49,29 @@ export default function BudgetDetail({ route }) {
   return (
     <DefaultLayout>
       <Backbar name={`${budgetItem.name} Details`} url="Details" />
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.card}>
-          <Text style={styles.detailText}>
-            Total Amount:{" "}
-            <Text style={styles.remainingAmount}>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Total Amount:</Text>
+            <Text style={styles.totalValue}>
               {formatCurrency(budgetItem.amount)} PKR
             </Text>
-          </Text>
-          <Text style={styles.detailText}>
-            Amount Spent:{" "}
-            <Text style={styles.amount}>
+          </View>
+
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Amount Spent:</Text>
+            <Text style={styles.spentValue}>
               {formatCurrency(budgetItem.spent)} PKR
             </Text>
-          </Text>
-          <Text style={styles.detailText}>
-            Remaining:{" "}
-            <Text style={styles.remainingAmount}>
+          </View>
+
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Remaining:</Text>
+            <Text style={styles.remainingValue}>
               {formatCurrency(remainingAmount)} PKR
             </Text>
-          </Text>
+          </View>
+
           <View style={styles.progressContainer}>
             <View
               style={[styles.progressBar, { width: `${spentPercentage}%` }]}
@@ -62,44 +80,46 @@ export default function BudgetDetail({ route }) {
           <Text style={styles.progressText}>
             {Math.round(spentPercentage)}% Spent
           </Text>
-          <Text style={styles.detailText}>
-            Duration:{" "}
-            <Text style={styles.highlight}>{budgetItem.duration}</Text>
-          </Text>
+
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Duration:</Text>
+            <Text style={styles.value}>{budgetItem.duration}</Text>
+          </View>
+
           {budgetItem.categories && budgetItem.categories.length > 0 && (
-            <Text style={styles.detailText}>
-              Categories:{" "}
-              <Text style={styles.highlight}>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>Categories:</Text>
+              <Text style={styles.value}>
                 {budgetItem.categories.join(", ")}
               </Text>
-            </Text>
+            </View>
           )}
+
           {budgetItem.startDate && budgetItem.endDate && (
-            <Text style={styles.detailText}>
-              Date Range:{" "}
-              <Text style={styles.highlight}>
+            <View style={styles.infoRow}>
+              <Text style={styles.label}>Date Range:</Text>
+              <Text style={styles.value}>
                 {formatDate(budgetItem.startDate)} -{" "}
                 {formatDate(budgetItem.endDate)}
               </Text>
-            </Text>
+            </View>
           )}
         </View>
 
-        {/* Delete Budget Button */}
         <TouchableOpacity style={styles.button} onPress={handleDeleteBudget}>
           <Text style={styles.buttonText}>Delete Budget</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </DefaultLayout>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
     backgroundColor: "#F1F8E9",
-    justifyContent: "center",
+    flexGrow: 1,
+    justifyContent: "center", // Center content vertically
   },
   card: {
     backgroundColor: "#FFFFFF",
@@ -110,28 +130,46 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 6,
     elevation: 5,
+    marginBottom: 20,
+    width: width * 0.95,
+    alignSelf: "center",
+    marginTop: 30, // Added margin to move the card down
   },
-  detailText: {
+  infoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 15,
+    width: "100%",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E0E0E0",
+  },
+  label: {
     fontSize: 16,
+    color: "#666",
+  },
+  totalValue: {
+    fontSize: 16,
+    fontWeight: "bold",
     color: "#333",
-    marginBottom: 12,
-    lineHeight: 22,
   },
-  amount: {
+  spentValue: {
+    fontSize: 16,
     fontWeight: "bold",
-    color: "#FF5722",
+    color: "#fa5252",
   },
-  remainingAmount: {
+  remainingValue: {
+    fontSize: 16,
     fontWeight: "bold",
-    fontSize: 18,
     color: "#2BCB79",
   },
   progressContainer: {
-    height: 15,
+    height: 20,
     backgroundColor: "#E0E0E0",
     borderRadius: 10,
     overflow: "hidden",
-    marginVertical: 15,
+    marginVertical: 20,
+    width: "100%",
   },
   progressBar: {
     height: "100%",
@@ -139,24 +177,22 @@ const styles = StyleSheet.create({
   },
   progressText: {
     textAlign: "center",
-    fontWeight: "500",
+    fontWeight: "600",
     color: "#333",
     marginTop: 5,
   },
-  highlight: {
-    fontWeight: "600",
-    color: "#666",
-  },
   button: {
-    backgroundColor: "#2BCB79", // Red color for delete button
+    backgroundColor: "#fa5252",
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
-    marginVertical: 10,
-    marginTop: 40,
+    width: width * 0.95,
+    alignSelf: "center",
+    marginBottom: 20,
   },
   buttonText: {
     color: "white",
     fontWeight: "bold",
+    fontSize: 16,
   },
 });
