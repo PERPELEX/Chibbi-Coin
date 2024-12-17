@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { Provider as PaperProvider } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { DataProvider } from "./components/contexts/DataContext"; // Import DataProvider
+import { DataProvider } from "./components/contexts/DataContext";
 import HomeScreen from "./components/screens/HomeScreen";
 import DetailsScreen from "./components/screens/DetailsScreen";
 import Notification from "./components/screens/Notification";
@@ -21,6 +21,8 @@ import GoalDetail from "./components/screens/GoalDetail";
 import CreateBudget from "./components/create/CreateBudget";
 import CreateGoal from "./components/create/CreateGoal";
 import User from "./components/screens/User";
+import ViewRecentTransaction from "./components/screens/ViewRecentTransaction";
+import ViewUpcomingTransaction from "./components/screens/ViewUpcomingTransaction";
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -29,9 +31,9 @@ function LoginTabs() {
   return (
     <Tab.Navigator
       initialRouteName="Login"
-      activeColor="#000" // Replace with static color
-      inactiveColor="#888" // Replace with static color
-      barStyle={{ backgroundColor: "#fff", display: "none" }} // Replace with static color
+      activeColor="#000"
+      inactiveColor="#888"
+      barStyle={{ backgroundColor: "#fff", display: "none" }}
     >
       <Tab.Screen
         name="Login"
@@ -81,8 +83,8 @@ function MainTabs() {
   return (
     <Tab.Navigator
       initialRouteName="Home"
-      activeColor="#02192B" // Replace with static color
-      inactiveColor="#fff" // Replace with static color
+      activeColor="#02192B"
+      inactiveColor="#fff"
       barStyle={{
         backgroundColor: "#fff",
         display: "none",
@@ -96,6 +98,14 @@ function MainTabs() {
       <Tab.Screen name="Notifications" component={Notification} />
       <Tab.Screen name="User" component={User} />
       <Tab.Screen name="AddTransaction" component={AddTransactionScreen} />
+      <Tab.Screen
+        name="ViewRecentTransaction"
+        component={ViewRecentTransaction}
+      />
+      <Tab.Screen
+        name="ViewUpcomingTransaction"
+        component={ViewUpcomingTransaction}
+      />
       <Tab.Screen name="BudgetBox" component={BudgetBox} />
       <Tab.Screen name="GoalBox" component={GoalBox} />
       <Tab.Screen name="BudgetDetail" component={BudgetDetail} />

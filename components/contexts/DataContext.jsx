@@ -189,6 +189,46 @@ export const DataProvider = ({ children }) => {
     }));
   };
 
+  // ----------------------------------//
+  const updateUpcomingTransaction = (updatedTransaction) => {
+    setData((prevData) => ({
+      ...prevData,
+      upcomingTransactions: prevData.upcomingTransactions.map((tx) =>
+        tx.id === updatedTransaction.id ? updatedTransaction : tx
+      ),
+    }));
+  };
+
+  const deleteUpcomingTransaction = (transactionId) => {
+    setData((prevData) => ({
+      ...prevData,
+      upcomingTransactions: prevData.upcomingTransactions.filter(
+        (tx) => tx.id !== transactionId
+      ),
+    }));
+  };
+  // ----------------------------------//
+
+  // ----------------------------------//
+  const updateRecentTransaction = (updatedTransaction) => {
+    setData((prevData) => ({
+      ...prevData,
+      recentTransactions: prevData.recentTransactions.map((tx) =>
+        tx.id === updatedTransaction.id ? updatedTransaction : tx
+      ),
+    }));
+  };
+
+  const deleteRecentTransaction = (transactionId) => {
+    setData((prevData) => ({
+      ...prevData,
+      recentTransactions: prevData.recentTransactions.filter(
+        (tx) => tx.id !== transactionId
+      ),
+    }));
+  };
+  // ----------------------------------//
+
   const updateGoal = (goalId, amountToAdd) => {
     setData((prevData) => ({
       ...prevData,
@@ -248,6 +288,10 @@ export const DataProvider = ({ children }) => {
         updateUserImage,
         updateUserField,
         addTransaction,
+        updateUpcomingTransaction,
+        deleteUpcomingTransaction,
+        updateRecentTransaction,
+        deleteRecentTransaction,
         deleteGoal,
         deleteBudget,
       }}
