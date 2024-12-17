@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   Animated,
+  StatusBar, // Import StatusBar component
 } from "react-native";
 import { TabView, SceneMap } from "react-native-tab-view";
 import Dashboard from "../expense/Dashboard";
@@ -70,6 +71,8 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <DefaultLayout>
+      <StatusBar barStyle="light-content" backgroundColor="#000" />{" "}
+      {/* Add StatusBar component */}
       <Dashboard />
       <View style={styles.accounts}>
         <Text style={styles.TitleText}>Accounts</Text>
