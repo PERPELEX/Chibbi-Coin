@@ -19,6 +19,7 @@ const ForgotPassword = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const handleForgotPassword = () => {
+    setEmail(email.replace(/\s+/g, ""));
     if (!email) {
       Alert.alert("Error", "Please enter your email address.");
       return;
@@ -43,7 +44,10 @@ const ForgotPassword = ({ navigation }) => {
       })
       .catch((error) => {
         setLoading(false);
-
+        if(email.includes(" ")){
+        Alert.alert("Error","Email should not contain spaces.");
+        }
+        else{
         let errorMessage = "Something went wrong. Please try again.";
         if (error.code === "auth/user-not-found") {
           errorMessage = "No account found with this email address.";
@@ -52,7 +56,9 @@ const ForgotPassword = ({ navigation }) => {
         }
 
         Alert.alert("Error", errorMessage);
+      }
       });
+    
   };
 
   return (
