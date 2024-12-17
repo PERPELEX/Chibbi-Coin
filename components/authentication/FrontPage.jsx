@@ -8,7 +8,7 @@ const FrontPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigation.replace("Login"); // Navigate to LoginTabs after 2 seconds
-    }, 3000);
+    }, 1500);
 
     return () => clearTimeout(timer); // Cleanup the timer on component unmount
   }, [navigation]);

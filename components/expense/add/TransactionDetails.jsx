@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -33,6 +33,31 @@ const TransactionDetails = ({
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [tempNotes, setTempNotes] = useState(notes);
+
+  useEffect(() => {
+    if (isRecurring) {
+      let newEndDate = new Date(startDate);
+      switch (frequency) {
+        case "daily":
+          newEndDate.setDate(newEndDate.getDate() + 1);
+          break;
+        case "weekly":
+          newEndDate.setDate(newEndDate.getDate() + 7);
+          break;
+        case "monthly":
+          newEndDate.setMonth(newEndDate.getMonth() + 1);
+          break;
+        case "yearly":
+          newEndDate.setFullYear(newEndDate.getFullYear() + 1);
+          break;
+        default:
+          break;
+      }
+      if (newEndDate.getTime() !== endDate.getTime()) {
+        setEndDate(newEndDate);
+      }
+    }
+  }, [isRecurring, frequency, startDate, endDate, setEndDate]);
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);

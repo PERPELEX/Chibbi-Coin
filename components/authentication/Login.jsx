@@ -6,24 +6,54 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { DataContext } from "../contexts/DataContext";
+import  app from "../utils/firebaseConfig";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
+const auth= getAuth(app);
 const LoginScreen = ({ navigation }) => {
   const { data } = useContext(DataContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
-    if (email === data.user.email && password === data.user.password) {
-      Alert.alert("Success", "Login successful!");
-      navigation.navigate("Main", { screen: "Home" });
-    } else {
-      Alert.alert("Error", "Invalid email or password.");
+    setEmail(email.replace(/\s+/g, ""));
+    // Validate input
+    if (!email || !password) {
+      Alert.alert("Error", "Please fill in all fields.");
+      return;
     }
-  };
 
+    // Attempt to log in using Firebase Authentication
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+
+        // If successful, show success alert and navigate
+        Alert.alert("Success", "Login successful!");
+        navigation.navigate("Main", { screen: "Home" });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        // Show error alerts for specific Firebase Authentication errors
+        if (errorCode === "auth/user-not-found") {
+          Alert.alert("Error", "No user found with this email.");
+        } else if (errorCode === "auth/wrong-password") {
+          Alert.alert("Error", "Incorrect password.");
+        }
+        else if(email.includes(" ")){
+          Alert.alert("Error","Email should not contain spaces.");
+        }
+         else {
+          Alert.alert("Error", `Login failed: ${errorMessage}`);
+        }
+      });
+  };
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -64,7 +94,7 @@ const LoginScreen = ({ navigation }) => {
         onPress={handleLogin}
         activeOpacity={0.7}
       >
-        <Text style={styles.loginButtonText}>Login</Text>
+        <Text style={styles.loginButtonText} >Login</Text>
         <Icon name="arrow-forward" size={20} color="#fff" />
       </TouchableOpacity>
 

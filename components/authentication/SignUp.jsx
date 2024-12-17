@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useContext,useState} from "react";
 import {
   View,
   Text,
@@ -6,11 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import {DataContext} from "../contexts/DataContext"
+import {DataContext} from "../contexts/DataContext";
+import {getAuth,createUserWithEmailAndPassword} from "firebase/auth"
+import app from "../utils/firebaseConfig";
 
-
+const auth = getAuth(app);
 const CreateAccountScreen = ({ navigation }) => {
   const { setData } = useContext(DataContext);
 
@@ -20,28 +23,65 @@ const CreateAccountScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
 
   const handleSignUp = () => {
+
+    setName(name.trim()); // Remove spaces at start and end of name
+    setEmail(email.replace(/\s+/g, ""));
+
     // Validate inputs
     if (!name || !email || !password) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
 
-    // Send data to context
-    setData((prevData) => ({
-      ...prevData,
-      user: {
-        ...prevData.user,
-        name,
-        email,
-        password,
-      },
-    }));
+    console.log("Creating user with email:", email);
 
-    // Show confirmation or navigate to another screen
-    Alert.alert("Success", "Account created successfully!");
+    // Use Firebase Authentication to create a new user
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Successfully created user
+        const user = userCredential.user;
 
-    // Navigate to the next screen (e.g., Login or Profile)
-    navigation.navigate("Login");
+        console.log("User created:", user);
+
+        // Send data to context after user is created
+        setData((prevData) => ({
+          ...prevData,
+          user: {
+            ...prevData.user,
+            name,
+            email,
+            password,
+          },
+        }));
+
+        // Show confirmation message
+        Alert.alert(
+          "Success",
+          "Account created successfully!",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                console.log("Navigating to Login screen");
+                navigation.navigate("Login");
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+      })
+      .catch((error) => {
+        if(email.includes(" ")){
+              Alert.alert("Error","Email should not contain spaces.");
+        }
+        else{
+        // Handle errors here
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log("Error during sign-up:", errorCode, errorMessage);
+        Alert.alert("Error", `Code: ${errorCode}, Message: ${errorMessage}`);
+          }
+      });
   };
 
   return (
@@ -107,6 +147,7 @@ const CreateAccountScreen = ({ navigation }) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -187,5 +228,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
 export default CreateAccountScreen;
