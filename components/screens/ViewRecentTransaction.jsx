@@ -14,13 +14,13 @@ import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { DataContext } from "../contexts/DataContext";
 import { useRoute, useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/FontAwesome";
 import ViewHeader from "./ViewHeader";
 import DefaultLayout from "../layout/DefaultLayout";
 
 export default function ViewRecentTransaction() {
-  const { updateRecentTransaction, deleteRecentTransaction } =
+  const { data, updateRecentTransaction, deleteRecentTransaction } =
     useContext(DataContext);
-  const { data, setData } = useContext(DataContext);
   const route = useRoute();
   const navigation = useNavigation();
   const { transactionId } = route.params;
@@ -36,14 +36,11 @@ export default function ViewRecentTransaction() {
   const [frequency, setFrequency] = useState("daily");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [activePicker, setActivePicker] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [tempNotes, setTempNotes] = useState("");
-
-  // State for showing date pickers
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [tempNotes, setTempNotes] = useState("");
 
   // Effect to update state when transactionId changes
   useEffect(() => {
@@ -68,19 +65,31 @@ export default function ViewRecentTransaction() {
 
   const handleDateChange = (event, selectedDate) => {
     if (event.type === "set" && selectedDate) {
-      if (activePicker === "date") setDate(selectedDate);
-      if (activePicker === "start") setStartDate(selectedDate);
-      if (activePicker === "end") setEndDate(selectedDate);
+      setDate(selectedDate);
     }
-    setActivePicker(null);
+    setShowDatePicker(false);
+  };
+
+  const handleStartDateChange = (event, selectedDate) => {
+    if (event.type === "set" && selectedDate) {
+      setStartDate(selectedDate);
+    }
+    setShowStartDatePicker(false);
+  };
+
+  const handleEndDateChange = (event, selectedDate) => {
+    if (event.type === "set" && selectedDate) {
+      setEndDate(selectedDate);
+    }
+    setShowEndDatePicker(false);
+  };
+
+  const handleSaveNotes = () => {
+    setNotes(tempNotes);
+    setModalVisible(false);
   };
 
   const handleSaveTransaction = () => {
-    if (!name || !amount || isNaN(amount)) {
-      Alert.alert("Validation Error", "Please enter valid details.");
-      return;
-    }
-
     const updatedTransaction = {
       id: transactionId,
       name,
@@ -106,13 +115,15 @@ export default function ViewRecentTransaction() {
       "Delete Transaction",
       "Are you sure you want to delete this transaction?",
       [
-        { text: "Cancel", style: "cancel" },
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
         {
           text: "Delete",
           style: "destructive",
           onPress: () => {
             deleteRecentTransaction(transactionId);
-            Alert.alert("Success", "Transaction deleted successfully!");
             navigation.goBack();
           },
         },
@@ -120,17 +131,12 @@ export default function ViewRecentTransaction() {
     );
   };
 
-  const handleSaveNotes = () => {
-    setNotes(tempNotes);
-    setModalVisible(false);
-  };
-
   const categories = [
-    { label: "Food and Drinks" },
-    { label: "Shopping" },
-    { label: "Transportation" },
-    { label: "Studies" },
-    { label: "Others" },
+    { label: "Food and Drinks", icon: "cutlery" },
+    { label: "Shopping", icon: "shopping-cart" },
+    { label: "Transportation", icon: "bus" },
+    { label: "Studies", icon: "book" },
+    { label: "Others", icon: "ellipsis-h" },
   ];
 
   return (
@@ -160,6 +166,7 @@ export default function ViewRecentTransaction() {
               selectedValue={currency}
               onValueChange={(itemValue) => setCurrency(itemValue)}
               style={styles.picker}
+              itemStyle={styles.pickerItem}
             >
               <Picker.Item label="USD" value="USD" />
               <Picker.Item label="PKR" value="PKR" />
@@ -172,6 +179,7 @@ export default function ViewRecentTransaction() {
               selectedValue={type}
               onValueChange={(itemValue) => setType(itemValue)}
               style={styles.picker}
+              itemStyle={styles.pickerItem}
             >
               <Picker.Item label="Expense" value="deducted" />
               <Picker.Item label="Income" value="added" />
@@ -208,9 +216,15 @@ export default function ViewRecentTransaction() {
               selectedValue={category}
               onValueChange={(itemValue) => setCategory(itemValue)}
               style={styles.picker}
+              itemStyle={styles.pickerItem}
             >
-              {categories.map((cat, index) => (
-                <Picker.Item key={index} label={cat.label} value={cat.label} />
+              {categories.map((category, index) => (
+                <Picker.Item
+                  key={index}
+                  label={category.label}
+                  value={category.label}
+                  color="#000"
+                />
               ))}
             </Picker>
           </View>
@@ -219,7 +233,7 @@ export default function ViewRecentTransaction() {
             <Text style={styles.label}>Recurring Expense</Text>
             <Switch
               value={isRecurring}
-              onValueChange={setIsRecurring}
+              onValueChange={(value) => setIsRecurring(value)}
               trackColor={{ false: "#767577", true: "#76dbbc" }}
               thumbColor={isRecurring ? "#16B773" : "#f4f3f4"}
             />
@@ -233,6 +247,7 @@ export default function ViewRecentTransaction() {
                   selectedValue={frequency}
                   onValueChange={(itemValue) => setFrequency(itemValue)}
                   style={styles.picker}
+                  itemStyle={styles.pickerItem}
                 >
                   <Picker.Item label="Daily" value="daily" />
                   <Picker.Item label="Weekly" value="weekly" />
@@ -257,7 +272,7 @@ export default function ViewRecentTransaction() {
                       value={startDate}
                       mode="date"
                       display="spinner"
-                      onChange={handleDateChange}
+                      onChange={handleStartDateChange}
                     />
                   )}
                 </View>
@@ -277,7 +292,7 @@ export default function ViewRecentTransaction() {
                       value={endDate}
                       mode="date"
                       display="spinner"
-                      onChange={handleDateChange}
+                      onChange={handleEndDateChange}
                     />
                   )}
                 </View>
@@ -286,12 +301,20 @@ export default function ViewRecentTransaction() {
           )}
 
           <TouchableOpacity
+            style={styles.saveButton}
+            onPress={handleSaveTransaction}
+          >
+            <Text style={styles.buttonText}>Save</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={styles.deleteButton}
             onPress={handleDeleteTransaction}
           >
             <Text style={styles.buttonText}>Delete</Text>
           </TouchableOpacity>
         </ScrollView>
+
         <Modal
           animationType="slide"
           transparent={true}
@@ -385,6 +408,13 @@ const styles = StyleSheet.create({
   },
   dateColumn: {
     flex: 1,
+  },
+  saveButton: {
+    backgroundColor: "#2BCB79",
+    padding: 15,
+    borderRadius: 5,
+    alignItems: "center",
+    marginBottom: 15,
   },
   deleteButton: {
     backgroundColor: "#fa5252",

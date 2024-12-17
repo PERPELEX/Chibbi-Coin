@@ -35,7 +35,6 @@ export default function ViewUpcomingTransaction() {
   const [frequency, setFrequency] = useState("daily");
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [activePicker, setActivePicker] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [tempNotes, setTempNotes] = useState("");
 
@@ -65,13 +64,25 @@ export default function ViewUpcomingTransaction() {
     }
   }, [transactionId, data.upcomingTransactions]);
 
-  const handleDateChange = (event, selectedDate) => {
-    if (event.type === "set" && selectedDate) {
-      if (activePicker === "date") setDate(selectedDate);
-      if (activePicker === "start") setStartDate(selectedDate);
-      if (activePicker === "end") setEndDate(selectedDate);
+  const handleDateChange = (selectedDate) => {
+    if (selectedDate) {
+      setDate(selectedDate);
     }
-    setActivePicker(null);
+    setShowDatePicker(false);
+  };
+
+  const handleStartDateChange = (selectedDate) => {
+    if (selectedDate) {
+      setStartDate(selectedDate);
+    }
+    setShowStartDatePicker(false);
+  };
+
+  const handleEndDateChange = (selectedDate) => {
+    if (selectedDate) {
+      setEndDate(selectedDate);
+    }
+    setShowEndDatePicker(false);
   };
 
   const handleSaveTransaction = () => {
@@ -189,7 +200,7 @@ export default function ViewUpcomingTransaction() {
               value={date}
               mode="date"
               display="spinner"
-              onChange={handleDateChange}
+              onChange={(event, selectedDate) => handleDateChange(selectedDate)}
             />
           )}
 
@@ -256,7 +267,9 @@ export default function ViewUpcomingTransaction() {
                       value={startDate}
                       mode="date"
                       display="spinner"
-                      onChange={handleDateChange}
+                      onChange={(event, selectedDate) =>
+                        handleStartDateChange(selectedDate)
+                      }
                     />
                   )}
                 </View>
@@ -276,7 +289,9 @@ export default function ViewUpcomingTransaction() {
                       value={endDate}
                       mode="date"
                       display="spinner"
-                      onChange={handleDateChange}
+                      onChange={(event, selectedDate) =>
+                        handleEndDateChange(selectedDate)
+                      }
                     />
                   )}
                 </View>
@@ -362,9 +377,6 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   picker: {
-    color: "#000",
-  },
-  pickerItem: {
     color: "#000",
   },
   dateText: {

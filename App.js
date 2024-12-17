@@ -23,6 +23,7 @@ import CreateGoal from "./components/create/CreateGoal";
 import User from "./components/screens/User";
 import ViewRecentTransaction from "./components/screens/ViewRecentTransaction";
 import ViewUpcomingTransaction from "./components/screens/ViewUpcomingTransaction";
+import BalanceScreen from "./components/screens/BalanceScreen";
 
 const Tab = createMaterialBottomTabNavigator();
 const Stack = createNativeStackNavigator();

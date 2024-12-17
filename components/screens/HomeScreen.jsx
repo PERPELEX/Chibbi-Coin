@@ -19,7 +19,7 @@ export default function HomeScreen({ navigation }) {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: "recent", title: "Recent Transactions" },
-    { key: "upcoming", title: "Upcoming Expenses" },
+    { key: "upcoming", title: "Upcoming Transactions" },
   ]);
 
   const renderScene = SceneMap({
@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 2,
     position: "relative",
+    paddingHorizontal: 0,
   },
   switchIndicator: {
     position: "absolute",
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   tabLabel: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
   },
   activeTabLabel: {
