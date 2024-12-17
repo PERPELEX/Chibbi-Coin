@@ -300,12 +300,12 @@ export default function ViewRecentTransaction() {
             </>
           )}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.saveButton}
             onPress={handleSaveTransaction}
           >
             <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <TouchableOpacity
             style={styles.deleteButton}
