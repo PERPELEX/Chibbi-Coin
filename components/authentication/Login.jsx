@@ -20,6 +20,7 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
+    setEmail(email.replace(/\s+/g, ""));
     // Validate input
     if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields.");
@@ -44,7 +45,11 @@ const LoginScreen = ({ navigation }) => {
           Alert.alert("Error", "No user found with this email.");
         } else if (errorCode === "auth/wrong-password") {
           Alert.alert("Error", "Incorrect password.");
-        } else {
+        }
+        else if(email.includes(" ")){
+          Alert.alert("Error","Email should not contain spaces.");
+        }
+         else {
           Alert.alert("Error", `Login failed: ${errorMessage}`);
         }
       });

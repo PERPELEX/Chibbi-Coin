@@ -23,6 +23,10 @@ const CreateAccountScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
 
   const handleSignUp = () => {
+
+    setName(name.trim()); // Remove spaces at start and end of name
+    setEmail(email.replace(/\s+/g, ""));
+
     // Validate inputs
     if (!name || !email || !password) {
       Alert.alert("Error", "Please fill in all fields.");
@@ -67,11 +71,16 @@ const CreateAccountScreen = ({ navigation }) => {
         );
       })
       .catch((error) => {
+        if(email.includes(" ")){
+              Alert.alert("Error","Email should not contain spaces.");
+        }
+        else{
         // Handle errors here
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log("Error during sign-up:", errorCode, errorMessage);
         Alert.alert("Error", `Code: ${errorCode}, Message: ${errorMessage}`);
+          }
       });
   };
 
