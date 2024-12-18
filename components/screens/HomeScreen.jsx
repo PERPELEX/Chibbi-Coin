@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useContext } from "react";
 import {
   StyleSheet,
   View,
@@ -6,17 +6,27 @@ import {
   Text,
   TouchableOpacity,
   Animated,
-  StatusBar, // Import StatusBar component
+  StatusBar,
 } from "react-native";
 import { TabView, SceneMap } from "react-native-tab-view";
 import Dashboard from "../expense/Dashboard";
 import RecentTransactions from "../expense/RecentTransactions";
 import UpcomingTransactions from "../expense/UpcomingTransactions";
 import DefaultLayout from "../layout/HomeLayout";
+import { DataContext } from "../contexts/DataContext";
 
 const initialLayout = { width: Dimensions.get("window").width };
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation, route }) {
+  const { email } = route.params || {}; // Ensure route.params is defined
+  const { getUserEmail } = useContext(DataContext);
+
+  useEffect(() => {
+    if (email) {
+      getUserEmail(email);
+    }
+  }, [email]);
+
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     { key: "recent", title: "Recent Transactions" },
@@ -71,8 +81,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <DefaultLayout>
-      <StatusBar barStyle="light-content" backgroundColor="#000" />{" "}
-      {/* Add StatusBar component */}
+      <StatusBar barStyle="light-content" backgroundColor="#000" />
       <Dashboard />
       <View style={styles.accounts}>
         <Text style={styles.TitleText}>Accounts</Text>
@@ -82,7 +91,7 @@ export default function HomeScreen({ navigation }) {
           renderScene={renderScene}
           onIndexChange={setIndex}
           initialLayout={initialLayout}
-          renderTabBar={() => null} // Hide the default tab bar
+          renderTabBar={() => null}
         />
       </View>
     </DefaultLayout>
@@ -136,9 +145,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   activeTabLabel: {
-    color: "#fff", // White color for active tab
+    color: "#fff",
   },
   inactiveTabLabel: {
-    color: "#eee", // Grey color for inactive tab
+    color: "#eee",
   },
 });

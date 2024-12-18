@@ -17,7 +17,8 @@ import Backbar from "../layout/Backbar";
 import * as Updates from "expo-updates";
 
 const User = ({ navigation }) => {
-  const { data, updateUserImage, updateUserField } = useContext(DataContext);
+  const { data, updateUserImage, updateUserField, clearStorage } =
+    useContext(DataContext);
   const [uploading, setUploading] = useState(false);
 
   const handleCurrencyChange = (value) => {
@@ -61,6 +62,11 @@ const User = ({ navigation }) => {
 
   const handleLogout = async () => {
     await Updates.reloadAsync();
+  };
+
+  const handleClearStorage = async () => {
+    await clearStorage();
+    Alert.alert("Success", "All data has been cleared.");
   };
 
   return (
@@ -123,6 +129,15 @@ const User = ({ navigation }) => {
               <Text style={styles.logoutButtonText}>Logout</Text>
             </TouchableOpacity>
           </View>
+
+          {/* <View style={styles.button}>
+            <TouchableOpacity
+              onPress={handleClearStorage}
+              style={styles.clearStorageButton}
+            >
+              <Text style={styles.clearStorageButtonText}>Clear Storage</Text>
+            </TouchableOpacity>
+          </View> */}
         </View>
       </View>
     </DefaultLayout>
@@ -203,6 +218,17 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   logoutButtonText: {
+    fontSize: 16,
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  clearStorageButton: {
+    backgroundColor: "#FF6347",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  clearStorageButtonText: {
     fontSize: 16,
     color: "#fff",
     fontWeight: "bold",

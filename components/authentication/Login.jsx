@@ -1,4 +1,4 @@
-import React,{useContext,useState} from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -6,14 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
-  Alert
+  Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { DataContext } from "../contexts/DataContext";
-import  app from "../utils/firebaseConfig";
+import app from "../utils/firebaseConfig";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-const auth= getAuth(app);
+const auth = getAuth(app);
 const LoginScreen = ({ navigation }) => {
   const { data } = useContext(DataContext);
   const [email, setEmail] = useState("");
@@ -34,7 +34,7 @@ const LoginScreen = ({ navigation }) => {
 
         // If successful, show success alert and navigate
         Alert.alert("Success", "Login successful!");
-        navigation.navigate("Main", { screen: "Home" });
+        navigation.navigate("Main", { screen: "Home", params: { email } });
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -45,11 +45,9 @@ const LoginScreen = ({ navigation }) => {
           Alert.alert("Error", "No user found with this email.");
         } else if (errorCode === "auth/wrong-password") {
           Alert.alert("Error", "Incorrect password.");
-        }
-        else if(email.includes(" ")){
-          Alert.alert("Error","Email should not contain spaces.");
-        }
-         else {
+        } else if (email.includes(" ")) {
+          Alert.alert("Error", "Email should not contain spaces.");
+        } else {
           Alert.alert("Error", `Login failed: ${errorMessage}`);
         }
       });
@@ -94,7 +92,7 @@ const LoginScreen = ({ navigation }) => {
         onPress={handleLogin}
         activeOpacity={0.7}
       >
-        <Text style={styles.loginButtonText} >Login</Text>
+        <Text style={styles.loginButtonText}>Login</Text>
         <Icon name="arrow-forward" size={20} color="#fff" />
       </TouchableOpacity>
 
